@@ -1,0 +1,5100 @@
+,user_id,data
+530,54,"package com.dbarr.cjar.CodeJam2018;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ * Created on 4/7/18.
+ */
+public class Solution {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int t = in.nextInt(); // Scanner has functions to read ints, longs, strings, chars, etc.
+        for (int i = 1; i <= t; ++i) {
+            int shield = in.nextInt();
+            String sequence = in.next();
+            List<String> list = createSequenceList(sequence);
+            if (shield < getShotCount(list)) {
+                printCase(i, ""IMPOSSIBLE"");
+            } else {
+                int monsterDamage = calculateDamageDone(list);
+                int swaps = 0;
+                List<Integer> chargeIndexes = createListOfIndexes(list, ""C"");
+                while (monsterDamage > shield) {
+                    int chargeIndex = chargeIndexes.get(chargeIndexes.size() - 1);
+                    if (chargeIndex == list.size() - 1) {
+                        chargeIndexes.remove(chargeIndexes.size() - 1);
+                        list.remove(list.size() - 1);
+                    } else {
+                        for (int j = chargeIndex; j < list.size(); j++) {
+                            if (j == list.size() - 1) {
+                                swaps += j - chargeIndex;
+                                list = swap(list, chargeIndex, j);
+                                list.remove(list.size() - 1);
+                                chargeIndexes.remove(chargeIndexes.size() - 1);
+                            } else if (list.get(j).matches(""S"")) {
+                                swaps += j - chargeIndex;
+                                list = swap(list, chargeIndex, j);
+                                chargeIndexes.set(chargeIndexes.size() - 1, j);
+                                break;
+                            }
+                        }
+                    }
+
+                    monsterDamage = calculateDamageDone(list);
+                }
+                printCase(i, String.valueOf(swaps));
+            }
+        }
+    }
+
+    private static void printCase(int number, String answer) {
+        System.out.println(String.format(""Case #%d: %s"", number, answer));
+    }
+
+    private static List<Integer> createListOfIndexes(List<String> list, String value) {
+        List<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).matches(value)) {
+                indexes.add(i);
+            }
+        }
+        return indexes;
+    }
+
+    public static List<String> swap(List<String> list, int first, int second) {
+        String temp = list.get(first);
+        list.set(first, list.get(second));
+        list.set(second, temp);
+        return list;
+    }
+
+    public static List<String> createSequenceList(String sequence) {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < sequence.length(); i++) {
+            list.add(String.valueOf(sequence.charAt(i)));
+        }
+        return list;
+    }
+
+    public static int calculateDamageDone(List<String> list) {
+        int damageDown = 0;
+        int powerLevel = 1;
+        for (String temp : list) {
+            if (temp.matches(""S"")) {
+                damageDown += powerLevel;
+            } else {
+                powerLevel *= 2;
+            }
+        }
+        return damageDown;
+    }
+
+    public static int getShotCount(List<String> list) {
+        int count = 0;
+        for (String temp : list) {
+            if (temp.matches(""S"")) {
+                count++;
+            }
+        }
+        return count;
+    }
+}"
+851,88,"import java.util.*;
+import java.io.*;
+public class Solution {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int t = in.nextInt();  // Scanner has functions to read ints, longs, strings, chars, etc.
+        System.err.println(""ntests: "" + t);
+        for (int i = 1; i <= t; ++i) {
+            int a = in.nextInt();
+            System.err.println(""a: "" + a);
+            HashSet<List<Integer>> reqPoint = new HashSet<List<Integer>>();
+            if (a == 20) {
+                for (int row = 500; row < 505; row++)
+                    for (int column = 500; column < 504; column++)
+                        reqPoint.add(Arrays.asList(new Integer[]{row, column}));
+            } else if (a == 200) { // if a == 200
+                for (int row = 500; row < 517; row++)
+                    for (int column = 500; column < 512; column++)
+                        reqPoint.add(Arrays.asList(new Integer[]{row, column}));
+            } else if (a == 10) {
+                for (int row = 500; row < 504; row++)
+                    for (int column = 500; column < 503; column++)
+                        reqPoint.add(Arrays.asList(new Integer[]{row, column}));
+            }
+            while (!reqPoint.isEmpty()) {
+                List<Integer> point = reqPoint.iterator().next();
+                System.err.println(""err is: "" + point.toString());
+                List<Integer> closest = getClosestPair(point);
+                System.out.println(Integer.toString(closest.get(0)) + "" "" + closest.get(1));
+                int x = in.nextInt();
+                int y = in.nextInt();
+                if (x == 0 && y == 0 || x == -1)
+                    break;
+                List<Integer> pair = Arrays.asList(new Integer[]{x, y});
+                System.err.println(""val is: "" + pair.toString());
+                if (reqPoint.contains(pair))
+                    reqPoint.remove(pair);
+            }
+            in.nextInt();
+            in.nextInt();
+        }
+    }
+
+    public static List<Integer> getClosestPair(List<Integer> pair) {
+        int x = Math.max(pair.get(0), 501);
+        x = Math.min(x, 504);
+        int y = Math.max(pair.get(1), 501);
+        y = Math.min(y, 503);
+        return Arrays.asList(new Integer[]{x, y});
+    }
+}"
+301,32,"import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Solution {
+
+    static int TroubleSort(ArrayList<Integer> liste)
+    {
+        int round = 0;
+        boolean done = false;
+        while(!done)
+        {
+            round++;
+            done = true;
+            for(int i = 0; i < liste.size()-2;i++)
+            {
+                if(liste.get(i)>liste.get(i+2))
+                {
+                    done = false;
+                    Integer temp = liste.get(i);
+                    liste.set(i,liste.get(i+2));
+                    liste.set(i+2,temp);
+                }
+            }
+        }
+        return round-1;
+    }
+
+
+    static boolean okTrouble(ArrayList<Integer> l)
+    {
+        boolean ok = true;
+        for(int i = 0; i < l.size()-1;i++)
+        {
+            if(l.get(i)>l.get(i+1))
+                ok=false;
+        }
+        return ok;
+    }
+
+    static ArrayList<Integer> intergerToList(int size,Long value)
+    {
+        String temp = Long.toString(value);
+        ArrayList<Integer> l = new ArrayList<>();
+        for(int i = 0;i<size;i++)
+            l.add(i,temp.charAt(i)-'0');
+        return l;
+    }
+
+    public static void main(String[] args)
+    {
+        ArrayList<Integer>list;
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int t = in.nextInt();
+        for (int i = 1; i <= t; ++i) {
+            int size = in.nextInt();
+            list = new ArrayList<>();
+            for(int j = 1; j <= size;++j)
+                list.add(in.nextInt());
+            int round = TroubleSort(list);
+            if(okTrouble(list))
+            {
+                System.out.println(""Case #""+i+"": OK"");
+            }
+            else
+            {
+                System.out.println(""Case #""+i+"": ""+round);
+            }
+        }
+    }
+
+}
+"
+830,86,"import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.stream.IntStream;
+
+public class Solution {
+    static BufferedReader inputStream = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer tokenizer = new StringTokenizer("""");
+
+    public static void main(String[] args) {
+        int n = nextInt();
+        Solution solution = new Solution();
+
+        IntStream.range(1, n + 1)
+                .forEach(solution::solve);
+    }
+
+    public void solve(int c) {
+        int n = nextInt();
+
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = nextInt();
+        }
+
+        arr = sort(arr);
+
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                System.out.println(""Case #"" + c + "": "" + i);
+                return;
+            }
+        }
+        System.out.println(""Case #"" + c + "": OK"");
+    }
+
+    int[] sort(int[] list) {
+        boolean done = false;
+        int start = 0;
+        int l = 0;
+        Map<Integer, Integer> pos = new HashMap<>();
+        while (!done) {
+            Map<Integer, Integer> newPos = new HashMap<>();
+            done = true;
+            for (int i = start; i < list.length - 2; i++) {
+                i = Math.max(pos.getOrDefault(i, i), i);
+                if (list[i] > list[i + 2]) {
+                    int buf = list[i];
+                    list[i] = list[i + 2];
+                    list[i + 2] = buf;
+                    if (done) {
+                        start = Math.max(start, i - 2);
+                        done = false;
+                    }
+                }
+                l = i;
+                newPos.put(l, i - 2);
+            }
+            pos = newPos;
+        }
+        return list;
+    }
+
+    static int nextInt() {
+        try {
+            if (!tokenizer.hasMoreTokens()) {
+                tokenizer = new StringTokenizer(inputStream.readLine());
+            }
+        } catch (Exception e) {
+            //do nothing
+        }
+        return Integer.valueOf(tokenizer.nextToken());
+    }
+}
+"
+516,53,"import java.util.*;
+
+public class Solution {
+	static boolean[][] playingboard = new boolean[1000][1000];
+	static final int startx = 1;
+	static int startval;
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = Integer.parseInt(sc.nextLine());
+		for (int i = 0; i < T; i++) {
+			int A = Integer.parseInt(sc.nextLine());
+			clearBoard();
+			startval = A;
+			solve(sc);
+		}
+	}
+
+	public static void solve(Scanner sc) {
+		int x = startx;
+
+		int lenx = startval / 6 + 1;
+
+		while (lenx > 0) {
+			lenx -= 3;
+			try{
+				fillSquare(x, 1, sc);
+				fillSquare(x, 4, sc);
+			} catch (ArithmeticException e){
+				break;
+			}
+			if (lenx < 3)
+				x += lenx;
+			else
+				x += 3;
+		}
+	}
+
+	public static void fillSquare(int x, int y, Scanner sc) {
+		while (!checkSquare(x, y)) {
+			System.out.println((x + 1) + "" "" + (y + 1));
+			StringTokenizer st = new StringTokenizer(sc.nextLine());
+			int fillx = Integer.parseInt(st.nextToken()) - 1;
+			int filly = Integer.parseInt(st.nextToken()) - 1;
+			if(fillx == -1){
+				throw new ArithmeticException();
+			}
+			playingboard[fillx][filly] = true;
+		}
+	}
+
+	public static boolean checkSquare(int x, int y) {
+		return playingboard[x][y] && playingboard[x + 1][y] && playingboard[x - 1][y] && playingboard[x][y + 1]
+				&& playingboard[x + 1][y + 1] && playingboard[x - 1][y + 1] && playingboard[x][y - 1]
+				&& playingboard[x + 1][y - 1] && playingboard[x - 1][y - 1];
+	}
+
+	public static void clearBoard() {
+		playingboard = new boolean[1000][1000];
+	}
+}
+"
+202,21,"public class Solution{
+    public static void main(String[] args){
+        
+    }
+}"
+36,3,"import java.io.*;
+import java.util.*;
+import java.math.BigInteger;
+import java.util.Map.Entry;
+
+import static java.lang.Math.*;
+
+public class Solution extends PrintWriter {
+
+    int inf = 1000;
+
+    int solve(long dmg, int n, boolean[] c) {
+
+        // SCCSSC
+        // SCSCSC
+
+        long cur = 0;
+        long pwr = 1;
+
+        int cnt = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (c[i]) {
+                pwr *= 2L;
+            } else {
+                ++cnt;
+                cur += pwr;
+            }
+        }
+
+        if (cnt > dmg) {
+            return inf;
+        }
+
+        int ans = 0;
+
+        while (cur > dmg) {
+            int id = 0;
+
+            for (int i = 1; i < n; i++) {
+                if (c[i - 1] && !c[i]) {
+                    id = i;
+                }
+            }
+
+            pwr = 1;
+
+            for (int i = 0; i < id; i++) {
+                if (c[i]) {
+                    pwr *= 2L;
+                }
+            }
+
+            c[id - 1] = false;
+            c[id] = true;
+            cur -= pwr / 2;
+            ++ans;
+        }
+
+        return ans;
+    }
+
+    void run() {
+        int t = nextInt();
+
+        for (int q = 1; q <= t; q++) {
+
+            int d = nextInt();
+            String s = next();
+            int n = s.length();
+            boolean[] c = new boolean[n];
+
+            for (int i = 0; i < n; i++) {
+                c[i] = s.charAt(i) == 'C';
+            }
+
+            int ans = solve(d, n, c);
+
+            if (ans < inf) {
+                printf(Locale.ENGLISH, ""Case #%d: %d%n"", q, ans);
+            } else {
+                printf(Locale.ENGLISH, ""Case #%d: %s%n"", q, ""IMPOSSIBLE"");
+            }
+        }
+
+    }
+
+    String next() {
+        while (!tokenizer.hasMoreTokens())
+            tokenizer = new StringTokenizer(nextLine());
+        return tokenizer.nextToken();
+    }
+
+    boolean hasNext() {
+        while (!tokenizer.hasMoreTokens()) {
+            String line = nextLine();
+            if (line == null) {
+                return false;
+            }
+            tokenizer = new StringTokenizer(line);
+        }
+        return true;
+    }
+
+    int[] nextArray(int n) {
+        int[] array = new int[n];
+        for (int i = 0; i < n; i++) {
+            array[i] = nextInt();
+        }
+        return array;
+    }
+
+    int nextInt() {
+        return Integer.parseInt(next());
+    }
+
+    long nextLong() {
+        return Long.parseLong(next());
+    }
+
+    double nextDouble() {
+        return Double.parseDouble(next());
+    }
+
+    String nextLine() {
+        try {
+            return reader.readLine();
+        } catch (IOException err) {
+            return null;
+        }
+    }
+
+    public Solution(OutputStream outputStream) {
+        super(outputStream);
+    }
+
+    static BufferedReader reader;
+    static StringTokenizer tokenizer = new StringTokenizer("""");
+    static Random rnd = new Random();
+
+    public static void main(String[] args) throws IOException {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        Solution solution = new Solution(System.out);
+        solution.run();
+        solution.close();
+        reader.close();
+    }
+}
+"
+229,24,"import sun.plugin.dom.exception.InvalidStateException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class Solution {
+    static Scanner in;
+
+    public static void main(String[] args) {
+//        try {
+//            in = new Scanner(new File(""C:\\Users\\Jonathan\\Desktop\\Projecten\\Java\\Codejam\\files\\in.txt""));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+        in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int t = Integer.parseInt(in.nextLine()); // Scanner has functions to read ints, longs, strings, chars, etc.
+        for (int i = 1; i <= t; ++i) {
+            solve();
+            System.out.flush();
+        }
+    }
+
+    public static void solve() {
+        int A = Integer.parseInt(in.nextLine());
+        int Ax;
+        int Ay;
+        if(A == 20){
+            Ax = 5;
+            Ay = 4;
+        }else if(A == 200){
+            Ax = 20;
+            Ay = 10;
+        }else{
+            throw new IllegalArgumentException();
+        }
+
+        boolean[][] field = new boolean[30][30]; //Should be big enough
+        int CURNy = 1; //Last column that's done
+        int CURNx = 1;
+
+
+        while(CURNx <= Ax && CURNy <= Ay){
+            System.out.println((CURNx + (CURNx == Ax ? 0 : 1)) + "" "" + (CURNy + (CURNy == Ay ? 0 : 1)));
+            System.out.flush();
+            String next = in.nextLine();
+
+            int RESx = Integer.parseInt(next.split("" "")[0]);
+            int RESy= Integer.parseInt(next.split("" "")[1]);
+
+            //Checks
+            if(RESx == 0 && RESy == 0) return;
+            if(RESx == -1 && RESy == -1){
+                System.exit(-1);
+                return;
+            }
+
+            field[RESx][RESy] = true;
+
+            //If we got the right square
+            if(RESx == CURNx && RESy == CURNy){
+                while(field[CURNx][CURNy]){
+                    CURNx++;
+                    if(CURNx > Ax){
+                        CURNy++;
+                        CURNx = 1;
+                    }
+                }
+            }
+        }
+
+        throw new InvalidStateException(""The judge failed us!"");
+    }
+
+    /* B
+    public static String solve() {
+        int N = Integer.parseInt(in.nextLine());
+        Integer[] L = Arrays.stream(in.nextLine().split("" "")).map(Integer::parseInt).<Integer>toArray(Integer[]::new);
+
+        int[] L1 = new int[(L.length / 2) + (L.length % 2)];
+        int[] L2 = new int[(L.length / 2)];
+
+        int j = 0;
+        for (int i = 0; i < L.length; i += 2) {
+            L1[j] = L[i];
+            j++;
+        }
+        j = 0;
+        for (int i = 1; i < L.length; i += 2) {
+            L2[j] = L[i];
+            j++;
+        }
+
+        //Sort
+        Arrays.sort(L1);
+        Arrays.sort(L2);
+
+        //Is sorted?
+        for (int i = 0; i < L1.length; i ++) {
+            L[i * 2] = L1[i];
+        }
+        for (int i = 0; i < L2.length; i ++) {
+            L[(i * 2) + 1] = L2[i];
+        }
+        for (int i = 0; i < L.length - 1; i++) {
+            if (L[i] > L[i + 1]) return """" + i;
+        }
+        return ""OK"";
+    }
+    */
+
+    /* A
+    private static String solve(String line) {
+        int D = Integer.parseInt(line.split("" "")[0]);
+        char[] P = line.split("" "")[1].toCharArray();
+
+        int count = 0;
+        //Ignore i == 0
+        if(countDamage(P) <= D) return count + """";
+        for (int i = P.length - 1; i > 0; i--){
+            if(P[i] == P[i-1]) continue;
+            if(P[i] == 'C') continue;
+            P[i] = 'C';
+            P[i-1] = 'S';
+            i = P.length;
+            count++;
+            if(countDamage(P) <= D) return count + """";
+        }
+
+        return ""IMPOSSIBLE"";
+    }
+
+    public static int countDamage(char[] P){
+        int cur = 1;
+        int total = 0;
+        for(char c : P){
+            if(c == 'C') cur *= 2;
+            if(c == 'S') total += cur;
+        }
+        return total;
+    }*/
+}
+"
+733,75,"
+import java.io.*;
+import java.util.*;
+public class Solution {
+
+	static void troubleSort(int[] arr){
+		boolean done=false;
+		int tmp;
+		while(!done){
+			done =true;
+			for (int i=0;i<arr.length-2 ;i++ ) {
+				if(arr[i]>arr[i+2]){
+					tmp=arr[i];
+					arr[i]=arr[i+2];
+					arr[i+2]=tmp;
+					done=false;
+				}
+			}
+		}
+
+	}
+
+    public static void main(String args[] ) throws Exception {
+    	BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+    	int tc=Integer.parseInt(br.readLine());
+    	int i;
+    	for(int cs=1;cs<=tc;cs++){
+
+    		int n=Integer.parseInt(br.readLine());
+    		int arr[]=new int[n];
+    		i=0;
+    		for(String s : br.readLine().split("" "")){
+    			arr[i++]=Integer.parseInt(s);
+    		}
+
+    		troubleSort(arr);
+    		for(i=0;i<n-1;i++){
+    			if(arr[i+1]<arr[i]){
+    				break;
+    			}
+    		}
+    		if(i==n-1){
+    			System.out.println(""Case #""+cs+"": OK"");
+    		}
+    		else{
+    			System.out.println(""Case #""+cs+"": ""+i);	
+    		}
+    	}
+        
+   }
+}
+"
+133,13,"import java.util.*;
+import java.io.*;
+class Solution {
+
+    public static int calc(String s) {
+        int r = 0;
+        int l = 1;
+        for (char c : s.toCharArray()) {
+        if (c=='C') l*=2; else r+=l;
+        }
+
+    return r;
+    }
+
+    public static String swap(String f,int ind)
+    {
+        char c=f.charAt(ind);
+        char c2=f.charAt(ind+1);
+        StringBuilder R=new StringBuilder(f);
+        R.setCharAt(ind,c2);
+        R.setCharAt(ind+1,c);
+        return R.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+
+
+        int n = in.nextInt();
+        for (int i = 1; i <= n; ++i) {
+            int answer=0;
+            int d = in.nextInt();
+            String p = in.next();
+
+            int tot=calc(p);
+
+            while (tot>d)
+            {
+                int index=p.indexOf(""CS"");
+                if (index<0) { answer=-1; break;}
+                p=swap(p,index);
+                answer++;
+                tot=calc(p);
+            }
+
+            System.out.println(""Case #"" + i + "": "" + ((answer==-1)?""IMPOSSIBLE"":answer));
+        }
+    }
+}"
+257,27,"public class Solution {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int T = in.nextInt();  // Scanner has functions to read ints, longs, strings, chars, etc.
+        for (int i = 1; i <= T; ++i) {
+            int d = in.nextInt();
+            String string = in.nextLine().trim();
+            solve(i, d, string);
+        }
+    }
+
+    static void solve(int caseN, int D, String input) {
+
+        int dMin = 0;
+        int d = 0;
+        int c = 1;
+        int p = -1;
+        for (int i = 0; i< input.length(); i++) {
+            if (input.charAt(i) == 'S') {
+                dMin++;
+                d = d + c;
+                //c = 1;
+            }
+            else {
+                p = i;
+                c = 2;
+            }
+        }
+        int r = D-d;
+        if (dMin>D) {
+            System.out.println(""Case #"" + caseN + "": IMPOSSIBLE"");
+            return;
+        }
+        if (r>=0) {
+            System.out.println(""Case #"" + caseN + "": 0"");
+            return;
+        }
+
+        System.out.println(""Case #"" + caseN + "": "" + (-r));
+    }
+}
+
+
+"
+739,76,"import java.util.Scanner;
+
+public class Solution {
+
+    private static char charge = 'C';
+    private static char shoot = 'S';
+    private static String lost = ""IMPOSSIBLE"";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int T = scanner.nextInt();
+        scanner.nextLine();
+        for (int i=1; i<=T; i++) {
+            long minSwapCount = 0;
+            String input = scanner.nextLine();
+            String[] splited = input.split("" "");
+            int D = Integer.parseInt(splited[0]);
+            String P = splited[1];
+            boolean outputDone = false;
+            while (swapRequired(D, P)) {
+                String newP = swapAndReturnNewP(P);
+                if (P.equals(newP)) {
+                    System.out.println(""Case #"" + String.valueOf(i) + "": "" + lost);
+                    outputDone = true;
+                    break;
+                } else {
+                    minSwapCount++;
+                    P = newP;
+                }
+            }
+            if (!outputDone) {
+                System.out.println(""Case #"" + String.valueOf(i) + "": "" + String.valueOf(minSwapCount));
+            }
+        }
+    }
+
+    private static boolean swapRequired(long D, String P) {
+        int beamStrength = 1;
+        int damageDone = 0;
+        for (char ch: P.toCharArray()) {
+            if (ch == charge) {
+                beamStrength *= 2;
+            } else {
+                damageDone += beamStrength;
+            }
+
+            if (damageDone > D) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String swapAndReturnNewP(String P) {
+        char ch[] = P.toCharArray();
+        int maxIndex = P.length()-1;
+        for (int i=maxIndex; i>=0; i--) {
+            char curr = ch[i];
+            if (curr == charge && i!=maxIndex && ch[i+1]==shoot) {
+                ch[i] = shoot;
+                ch[i+1] = charge;
+                break;
+            }
+        }
+        return String.valueOf(ch);
+    }
+
+}
+
+
+"
+697,71,"//Author: net12k44
+import java.io.*;
+import java.util.*;
+//public
+class Solution{//}
+
+class Matrix {
+	
+	public int m, n;
+	private double[][] a;
+	
+	public Matrix(int m, int n) {
+		this.m = m;
+		this.n = n;
+		a = new double[m][n];
+	}
+	
+	public Matrix(int m, int n, boolean isIdentity) {
+		this(m, n);
+		if (isIdentity) {
+			if (m == n)
+				for (int i = 0; i < m; ++i)
+					a[i][i] = 1;
+		}
+	}
+	
+	public Matrix(double[][] a) {
+		this(a.length, a[0].length);
+		
+		for (int i = 0; i < m; ++i)
+		for (int j = 0; j < n; ++j)
+			this.a[i][j] = a[i][j];
+	}
+	
+	public void init() {
+		for(int i = 0; i < m; ++i)
+			Arrays.fill(a[i], 0);
+	}
+	
+	@Override
+	public String toString() {
+		String result = """";
+		for (int i = 0; i < m; ++i) {
+			for (int j = 0; j < n; ++j) {
+				result = result + a[i][j] + "" "";
+			}
+			
+			result = result + ""\r\n"";
+		}
+		return result;
+	}
+	
+	public Matrix multiply(Matrix other) {
+		Matrix result = new Matrix(m, other.n);
+		return this.multiply(other, result, false);
+	}
+	
+	public Matrix multiply(Matrix other, Matrix result) {
+		return this.multiply(other, result, true);
+	}
+	
+	public Matrix multiply(Matrix other, Matrix result, boolean init) {
+		if (init)
+			result.init();
+		
+		for (int i = 0; i < result.m; ++i)
+			for (int j = 0; j < result.n; ++j)
+				for (int k = 0; k < n; ++k) {
+					result.assign(
+						i, j, 
+						result.get(i,j) + this.get(i,k) * other.get(k, j) 
+					);
+				}
+				
+		return result;
+	}
+	
+	public void assign(int i, int j, double value) {
+		a[i][j] = value;
+	}
+	
+	public double get(int i, int j) {
+		return a[i][j];
+	}
+}
+
+
+static double ep = 5e-6;
+static int getSign(double value) {
+	if (Math.abs(value) < ep)
+		return 0;
+	
+	if (value < 0)
+		return -1;
+	
+	return 1;
+}
+
+static class Result implements Comparable<Result> {
+	double area;
+	Matrix rot;
+		
+    
+    @Override
+    public int compareTo(Result other){
+        return Double.compare(area, other.area);
+    }
+	
+}
+
+static class Point implements Comparable<Point>{
+    public double x, y;
+    public Point() { this(0,0); }
+    public Point(double x, double y){
+        this.x = x;
+        this.y = y;
+    }
+    
+    @Override
+    public boolean equals(Object other){
+        if ( !(other instanceof Point) )
+            return false;
+        
+        Point pOther = (Point)other;
+        return Math.abs(x - pOther.x) < ep && Math.abs(y - pOther.y) < ep;
+    }
+    
+    @Override
+    public int compareTo(Point other){
+        if (Math.abs(this.x-other.x) > ep)
+			return Double.compare(x, other.x);										
+        else if (Math.abs(this.y-other.y) > ep)			
+            return Double.compare(y, other.y);
+		return 0;
+    }
+    
+    @Override
+    public String toString(){
+        return (x+"" ""+y);
+    }
+    
+    public final static Point ZERO = new Point();
+    public static double dist(Point a, Point b){
+        double x = a.x-b.x;
+        double y = a.y-b.y;
+        return x*x + y*y;
+    }
+        
+}
+
+static class Vector{
+    public double x, y;
+    
+    public Vector() {this(0,0);}
+    
+    public Vector(double x, double y){
+        this.x = x;
+        this.y = y;
+    }
+    
+    public Vector(Point a, Point b){
+        this(b.x-a.x, b.y-a.y);        
+    }
+    
+    public double length(){
+        return x*x + y*y;
+    }
+    
+    public static double cross_product(Vector a, Vector b){
+        return a.x*b.y - a.y*b.x;
+    }
+}
+
+class Polygon {
+    ArrayList<Point> listPoint;
+    double area = -1;
+    int size = -1;
+    
+    public Polygon(Collection<Point> listPoint){
+        this.listPoint = new ArrayList<Point>();
+        for(Point p: listPoint) {
+			//out.println(p);
+            this.listPoint.add(p);
+		}
+    }
+    
+    public Polygon(Point[] listPoint){
+        this.listPoint = new ArrayList<Point>();
+        for(Point p: listPoint)
+            this.listPoint.add(p);
+    }
+    
+    private boolean isClockwise(Point a, Point b, Point c){
+        Vector x = new Vector(a, b);
+        Vector y = new Vector(a, c);
+		//out.println(a+""   ""+b+""    ""+c+""    ""+Vector.cross_product(x, y));
+        return Vector.cross_product(x,y) < -ep;
+    }
+    
+    public int size(){
+        return size;
+    }
+    
+    public double getArea(){
+        if (area > 0) return area;
+        double result = 0;
+        for(int i = 0; i < listPoint.size(); ++i){
+            Point curr = listPoint.get(i);
+            Point next = listPoint.get( (i+1)%listPoint.size() );
+            result += curr.x*next.y - curr.y*next.x;
+        }
+        
+        area = Math.abs(result)/2;
+        return area;
+    }
+    
+    //Return point inside convex this Polygon        
+    ArrayList<Point> makeConvexPolygon(){
+        if (listPoint.size() == 0)
+            throw new RuntimeException(""Empty Polygon"");
+    
+        for(int i = 1; i < listPoint.size(); ++i)
+            if (listPoint.get(0).compareTo(listPoint.get(i)) > 0)
+                Collections.swap(listPoint,0,i);
+                
+        final Point pFirst = listPoint.get(0);        
+        Collections.sort(listPoint, new Comparator<Point>(){
+            @Override
+            public int compare(Point x, Point y){
+                if (x.equals(y)) return 0;
+                if (x.equals(pFirst)) return -1;
+                if (y.equals(pFirst)) return 1;
+                
+                Vector xx = new Vector(pFirst, x);
+                Vector yy = new Vector(pFirst, y);
+                double result = Vector.cross_product(yy, xx);
+                if (getSign(result) != 0)
+                    return getSign(result);
+                else
+                    return getSign(yy.length() - xx.length());
+            }
+        });
+		
+		//out.println(listPoint);
+                
+        if (listPoint.size() >= 2){
+            int front = 1, rear = 2;
+            Vector vFirst = new Vector(pFirst, listPoint.get(1));
+            for(rear = 2; rear < listPoint.size(); ++rear){
+                Vector xx = new Vector(pFirst, listPoint.get(rear));
+                if (Math.abs(Vector.cross_product(vFirst, xx))>ep) break;
+            }
+            Collections.reverse(listPoint.subList(front, rear));
+        }
+        
+		//out.println(listPoint);
+
+        int nPoint = 0;
+        ArrayList<Point> reject = new ArrayList<Point>();
+        for(Point p: listPoint){
+            //System.err.print(p+"","");
+            while (nPoint >= 2 && 
+                isClockwise(
+                    listPoint.get(nPoint-2),
+                    listPoint.get(nPoint-1),
+                    p
+                )
+            ) reject.add( listPoint.get(--nPoint) );
+            listPoint.set(nPoint++, p);
+            //System.err.println(listPoint);
+        }
+        
+        
+        listPoint.subList(nPoint, listPoint.size()).clear();
+        if (reject.isEmpty()) reject = null;
+        return reject;    
+    }
+
+    @Override
+    public String toString(){
+        return listPoint.toString();
+    }
+    
+    public boolean equals(Polygon other){
+        if (listPoint.size() != other.listPoint.size()) return false;
+        for(int i = 0; i < listPoint.size(); ++i)
+            if (!listPoint.get(i).equals(other.listPoint.get(i)))
+                return false;
+        
+        return true;    
+    }
+  
+}
+
+Result[] res;
+int n;
+
+private void init(long startTime){	
+	int limit = 4000000;
+	n = 0;
+	res = new Result[limit];
+	for (int i = 0; i < limit; ++i) {
+		res[i] = new Result();
+	}
+
+	
+	Matrix[] points = new Matrix[8];
+	for (int i = 0, cnt = 0; i < 2; ++i)
+		for (int j = 0; j < 2; ++j)
+			for (int k = 0; k < 2; ++k) {
+				double[][] p = new double[3][1];
+				p[0][0] = 0.5 * Math.pow(-1, i);
+				p[1][0] = 0.5 * Math.pow(-1, j);
+				p[2][0] = 0.5 * Math.pow(-1, k);
+				//out.println(p[0][0]+"" ""+p[1][0]+"" ""+p[2][0]);
+				points[cnt++] = new Matrix(p);
+			}
+			
+	
+	double smin = 10;
+	double smax = 0;
+	double gap = 1e-6;
+	
+	
+	int cnt = 0;
+	Matrix rotX = new Matrix(3, 3, true);
+	Matrix rotZ = new Matrix(3, 3, true);
+	List<Point> pp = new ArrayList<Point>();
+	for(int i = 0; i < points.length; ++i) {
+		pp.add(new Point(0, 0));
+	}
+
+	Matrix p = new Matrix(3, 1);
+	for (double xAngle = 0, zAngle = gap; xAngle <= Math.PI/4; xAngle += gap) {		
+		rotX.assign(1, 1, Math.cos(xAngle)); 
+		rotX.assign(1, 2, -Math.sin(xAngle));
+		rotX.assign(2, 1, Math.sin(xAngle)); 
+		rotX.assign(2, 2, Math.cos(xAngle));			
+		//out.println(rotX);
+		//out.println(rotXY);
+		if (cnt == 1000) {
+			zAngle -= gap*100000;
+		} else {
+			zAngle -= gap;
+		}
+
+		for (; zAngle <= Math.PI/4; zAngle += gap) {
+			rotZ.assign(0, 0, Math.cos(zAngle)); 
+			rotZ.assign(0, 1, -Math.sin(zAngle));
+			rotZ.assign(1, 0, Math.sin(zAngle)); 
+			rotZ.assign(1, 1, Math.cos(zAngle));
+			Matrix rot = rotX.multiply(rotZ);
+			
+			//out.println(rotZ);
+			//out.println(rot);
+			//List<Point> pp = new ArrayList<Point>();
+			for (int i = 0; i < points.length; ++i) {
+				p = rot.multiply(points[i], p);
+				pp.get(i).x = p.get(0,0);
+				pp.get(i).y = p.get(2,0);
+			}
+			
+			Polygon poly = new Polygon(pp);
+			//out.println(poly.listPoint);
+			
+			poly.makeConvexPolygon();
+			double s = poly.getArea();								
+			
+			/* if (smin > s) {
+				smin = s;
+				out.println(xAngle+"" ""+yAngle+"" ""+zAngle);
+				out.println(s);
+				out.println(smin+"" ""+smax); out.flush();
+			}
+			
+			if (smax < s) {
+				smax = s;
+				out.println(xAngle+"" ""+yAngle+"" ""+zAngle);
+				out.println(s);
+				out.println(smin+"" ""+smax); out.flush();
+				
+			} */
+							
+			//out.println(s);
+			//if (getSign(s - area) == 0) {
+			//Result now = new Result();
+			res[n].area = s;
+			res[n].rot = rot;			
+			n++;
+				
+				//return;
+			//}				
+		}
+		cnt++;
+		//throw new RuntimeException(""Error"");
+	}
+	
+	//out.println(n);
+	//out.println((String.format(""%.2f"",(double)(System.currentTimeMillis()-startTime)/1000)));
+	Arrays.sort(res, 0, n);
+}
+
+private void lam() {	
+	double area = in.nextDouble();
+	
+	int dau = 0, cuoi = n - 1;
+	while (dau <= cuoi) {
+		int k = (dau + cuoi) >> 1;
+		if (res[k].area < area) {
+			dau = k+1;
+		} else {
+			cuoi = k-1;
+		}
+	}
+	
+	if (dau == n) dau--;
+	if (dau == 0) dau++;
+	int t = dau;
+	if (Math.abs(res[t].area - area) > Math.abs(res[t-1].area - area)) {
+		t--;
+	}
+	
+	
+	Matrix[] results = new Matrix[3];
+	for (int i = 0; i < 3; ++i) {
+		double[][]  p = new double[3][1];
+		p[i][0] = 0.5;
+		results[i] = new Matrix(p);
+	}
+	
+	for (int i = 0; i < 3; ++i) {
+			//out.println(res[t].area);
+			Matrix r = res[t].rot.multiply(results[i]);					
+			for(int k = 0; k < 3; ++k) {
+				out.printf(""%.9f "", r.get(k, 0));								
+		}
+		out.println();
+	}		
+}
+
+
+private void solve(long startTime) {
+	init(startTime);
+    int test = in.nextInt();
+    for(int t = 1; t <= test; ++t){
+        out.printf(""Case #%d:"", t);
+		out.println();
+        lam();
+    }    
+}
+    
+public static void main (String[] args) throws java.lang.Exception {
+	try {	
+		long startTime = System.currentTimeMillis();
+
+		out = new PrintWriter(System.out);
+		//out = new PrintWriter(""file.out"");
+		new Solution().solve(startTime);    
+		//out.println((String.format(""%.2f"",(double)(System.currentTimeMillis()-startTime)/1000)));
+		out.close();
+	} catch (Exception e) {
+		throw e;
+	}
+}
+static PrintWriter out;
+static void println(int[] a){
+    for(int i = 0; i < a.length; ++i){
+        if (i != 0) out.print(' ');
+        out.print(a[i]);
+    }
+    out.println();
+}
+static class in {
+    static BufferedReader reader = new BufferedReader( new InputStreamReader(System.in) ) ;
+    static StringTokenizer tokenizer = new StringTokenizer("""");                
+    static String next() {        
+        while ( !tokenizer.hasMoreTokens() )
+            try { tokenizer = new StringTokenizer( reader.readLine() ); }
+            catch (IOException e){
+                throw new RuntimeException(e);            
+            }        
+        return tokenizer.nextToken();
+    }
+    static int nextInt() { return Integer.parseInt( next() ); }
+	static double nextDouble() { return Double.parseDouble( next() ); }
+}
+//////////////////////////////////////////////////
+}//"
+557,57,"import java.io.*;
+import java.util.*;
+
+public class Solution {
+    private static Scanner in;
+
+    public static double roundToDecimals(double value, int places) {
+        double scale = Math.pow(10, places);
+        return Math.round(value * scale) / scale;
+    }
+    public static void xuly(){
+        double a = in.nextDouble();
+        double[] centerX = {0.5,0,0};
+        double[] centerY = {0,0.5,0};
+        double[] centerZ = {0,0,0.5};
+        double[] x0 = {0.5, 0.5, 0.5, 0.5,-0.5,-0.5,-0.5,-0.5};
+        double[] y0 = {0.5, 0.5,-0.5,-0.5, 0.5, 0.5,-0.5,-0.5};
+        double[] z0 = {0.5,-0.5,-0.5, 0.5,-0.5, 0.5,-0.5, 0.5};
+        double i = 0;
+        while (i<=90){
+            double rad = Math.toRadians(i);
+            // convert toa do
+            double[] xr = new double[8];
+            //double[] yr = new double[8];
+            double[] zr = new double[8];
+            for (int j = 0; j < 8; j++) {
+                xr[j] = x0[j] * Math.cos(rad) - y0[j]* Math.sin(rad);
+                //yr[j] = x0[j] * Math.sin(rad) + y0[j]* Math.cos(rad);
+                zr[j] = z0[j];
+            }
+            // projection bo qua y, vi xz plane
+            // tinh dien tich
+            double x1 = 1,y1 = 1,x2 = -1,y2 = -1;
+            for (int j = 0; j < 8; j++) {
+                x1 = Math.min(x1,xr[j]);
+                x2 = Math.max(x2,xr[j]);
+                y1 = Math.min(y1,zr[j]);
+                y2 = Math.max(y2,zr[j]);
+            }
+            double dt = (x2-x1) * (y2-y1) ;
+
+            double diff = Math.abs(a - dt);
+            //System.out.println(diff);
+            if (diff <= 0.000001) {
+                //show kq center moi
+                double[] cX = new double[3];
+                double[] cY = new double[3];
+                double[] cZ = new double[3];
+                //System.out.println(i );
+                for (int j = 0; j < 3; j++) {
+                    cX[j] = centerX[j] * Math.cos(rad) - centerY[j] * Math.sin(rad);
+                    cY[j] = centerX[j] * Math.sin(rad) + centerY[j] * Math.cos(rad);
+                    cZ[j] = centerZ[j];
+                    System.out.println(cX[j] + "" "" + cY[j] + "" "" + cZ[j]);
+                }
+                break;
+            }
+            i=roundToDecimals(i+0.1,6);
+        }
+        System.out.flush();
+    }
+
+    public static void main(String[] args) throws IOException {
+        in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int numCases = in.nextInt();
+
+        for (int test = 1; test <= numCases; test++) {
+            System.out.print(""Case #"" + test + "": "");
+            xuly();
+        }
+    }
+}"
+520,53,"import java.util.*;
+
+public class Solution {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int T = Integer.parseInt(sc.nextLine());
+		double[] As = new double[T];
+		for(int i = 0; i < T; i++) {
+			As[i] = Double.parseDouble(sc.nextLine());
+		}
+		
+		for(int i = 0; i < T; i++) {
+			System.out.println(""Case #"" + (i + 1) + "":"");
+			double[][] solution = solve(As[i]);
+			for(int j = 0; j < 3; j++) {
+				System.out.println(solution[j][0] + "" "" + solution[j][1] + "" "" + solution[j][2]);
+			}
+		}
+	}
+	public static double[][] solve(double x) {
+		double[] p1 = new double[3];
+		double[] p2 = new double[3];
+		double[] p3 = new double[3];
+		double[][] points = {p1, p2, p3};
+		
+		if(x > 1.414213) {
+			p1[0] = 0.5;
+			p2[0] = 0.5;
+			p3[0] = 0.5;
+			return points;
+		}
+		
+		double theta = Math.acos(x / Math.sqrt(2));
+		double theta1 = theta + (Math.PI/4);
+		p1[0] = Math.cos(theta1) * Math.sqrt(2) / 2;
+		p1[1] = Math.sin(theta1) * Math.sqrt(2) / 2;
+		p2[0] = -p1[1];
+		p2[1] = p1[0];
+		p3[2] = 0.5;
+		return points;
+	}
+}"
+650,68,"
+import java.io.BufferedInputStream;
+import java.util.Scanner;
+
+/**
+ * Created by meir on 07/04/18.
+ */
+public class Solution {
+
+	public static void main(String[] args) {
+		Scanner s = new Scanner(System.in);
+		int t = s.nextInt();
+		for (int i = 1; i <= t; ++i) {
+			int a=s.nextInt();
+			int x=a==20?5:20;
+			int y=a==20?4:10;
+			boolean mat[][]=new boolean[x][y];
+			byte cnt[][]=new byte[x][y];
+
+			for (int iter=0;iter<1000;++iter) {
+				int min = 100;
+				int minx = -1;
+				int miny = -1;
+				for (int j = 1; j < x-1; ++j) {
+					for (int k = 1; k < y-1; ++k) {
+						int c = cnt[j][k];
+						if (c < min) {
+							min = c;
+							minx = j;
+							miny = k;
+						}
+					}
+				}
+				System.out.printf(""%d %d\n"",minx+1,miny+1);
+				System.out.flush();
+				int px=s.nextInt();
+				int py=s.nextInt();
+				if (px==0 && py==0) break;
+				px--;
+				py--;
+				if (!mat[px][py]) {
+					mat[px][py]=true;
+					for (int j=Math.max(0,px-1);j<Math.min(x,px+2);++j) {
+						for (int k = Math.max(0, py - 1); k < Math.min(y, py + 2); ++k) {
+							cnt[j][k]++;
+						}
+					}
+				}
+
+			}
+			//System.out.printf(""Case #%d: %s"",i,"""");
+
+		}
+	}
+}
+"
+738,76,"import java.util.Scanner;
+
+public class Solution {
+
+    private static char charge = 'C';
+    private static char shoot = 'S';
+    private static String lost = ""IMPOSSIBLE"";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int T = scanner.nextInt();
+        for (int i=1; i<=T; i++) {
+            int minSwapCount = 0;
+            Scanner sc = new Scanner(System.in);
+            String input = sc.nextLine();
+            String[] splited = input.split("" "");
+            int D = Integer.parseInt(splited[0]);
+            String P = splited[1];
+            boolean outputDone = false;
+            while (swapRequired(D, P)) {
+                String newP = swapAndReturnNewP(P);
+                if (P.equals(newP)) {
+                    System.out.println(""Case #"" + String.valueOf(i) + "": "" + lost);
+                    outputDone = true;
+                    break;
+                } else {
+                    minSwapCount++;
+                    P = newP;
+                }
+            }
+            if (!outputDone) {
+                System.out.println(""Case #"" + String.valueOf(i) + "": "" + String.valueOf(minSwapCount));
+            }
+        }
+    }
+
+    private static boolean swapRequired(int D, String P) {
+        int beamStrength = 1;
+        int damageDone = 0;
+        for (char ch: P.toCharArray()) {
+            if (ch == charge) {
+                beamStrength *= 2;
+            } else {
+                damageDone += beamStrength;
+            }
+
+            if (damageDone > D) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String swapAndReturnNewP(String P) {
+        char ch[] = P.toCharArray();
+        int maxIndex = P.length()-1;
+        for (int i=maxIndex; i>=0; i--) {
+            char curr = ch[i];
+            if (curr == charge && i!=maxIndex && ch[i+1]==shoot) {
+                ch[i] = shoot;
+                ch[i+1] = charge;
+                break;
+            }
+        }
+        return String.valueOf(ch);
+    }
+
+}
+
+
+"
+652,68,"
+import java.io.BufferedInputStream;
+import java.util.Arrays;
+import java.util.Scanner;
+
+/**
+ * Created by meir on 07/04/18.
+ */
+public class Solution {
+
+	public static void troubleSort(int[] arr) {
+		boolean done=false;
+		while (!done) {
+			done=true;
+			for (int i=0;i<arr.length-2;++i) {
+				if (arr[i]>arr[i+2]) {
+					done=false;
+					int tmp=arr[i];
+					arr[i]=arr[i+2];
+					arr[i+2]=tmp;
+				}
+			}
+		}
+	}
+
+	public static void troubleSort2(int[] arr) {
+		int even[]=new int[arr.length-arr.length/2];
+		int odd[]=new int[arr.length/2];
+		for (int i=0;i<arr.length;++i) {
+			if (i%2==0) {
+				even[i/2]=arr[i];
+			} else {
+				odd[i/2]=arr[i];
+			}
+		}
+		Arrays.sort(even);
+		Arrays.sort(odd);
+		for (int i=0;i<arr.length;++i) {
+			if (i%2==0) {
+				arr[i]=even[i/2];
+			} else {
+				arr[i]=odd[i/2];
+			}
+		}
+	}
+
+	static String validate(int[] arr) {
+		for (int i=0;i<arr.length-1;++i) {
+			if (arr[i]>arr[i+1]) return String.valueOf(i);
+		}
+		return ""OK"";
+	}
+
+	public static void main(String[] args) {
+		Scanner s = new Scanner(new BufferedInputStream(System.in,1000000));
+		int t = s.nextInt();
+		for (int i = 1; i <= t; ++i) {
+			int n=s.nextInt();
+			int arr[]=new int[n];
+			for (int j=0;j<n;++j) arr[j]=s.nextInt();
+			troubleSort2(arr);
+			System.out.printf(""Case #%d: %s\n"",i,validate(arr));
+
+		}
+	}
+}"
+452,46,"
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+import javax.swing.text.NumberFormatter;
+
+public class Solution {
+  static Class<Solution> clazz = Solution.class;
+  int dmax;
+
+  public Solution() {
+    super();
+  }
+
+  // @Override
+  public void readCase() throws IOException {
+    String input = getReader().readLine();
+    Scanner sc = new Scanner(input);
+    this.dmax = sc.nextInt();
+    input = sc.next();
+    p = new int[input.length()];
+    for (int i = 0; i < input.length(); ++i) {
+      if (input.charAt(i) == 'S') {
+        p[i] = 1;
+      } else {
+        p[i] = 0;
+      }
+    }
+  }
+
+  // @Override
+  public MySolution solveCase() {
+    int[] val = value(p);
+
+    int good = p.length, bad = good;
+    int hacks = 0;
+    while (val[0] > dmax && bad > 0) {
+      bad--;
+      while (p[bad] == 1 && bad > 0) {
+        bad--;
+      }
+      if (bad >= 0) {
+        val[1] /= 2;
+        int red = good - bad - 1;
+        if (red * val[1] > val[0] - dmax) {
+          red = (val[0] - dmax) / val[1];
+          if (red * val[1] < val[0] - dmax) {
+            red++;
+          }
+        }
+        p[bad] = 1;
+        p[--good] = 0;
+        val[0] -= val[1] * red;
+        hacks += red;
+      }
+    }
+
+    return new MySolution(val[0] <= dmax ? hacks : -1);
+  }
+
+  private int[] value(int[] p2) {
+    int sum = 0, strength = 1;
+    for (int i = 0; i < p2.length; ++i) {
+      if (p[i] == 1) {
+        sum += strength;
+      } else {
+        strength *= 2;
+      }
+    }
+    return new int[] { sum, strength };
+  }
+
+  public static void main(String[] args) throws IOException {
+    Solution solver = new Solution();
+    solver.run();
+  }
+
+  public static class MySolution extends SimpleSolution<Integer> {
+
+    public MySolution(Integer v) {
+      super(v);
+    }
+
+    @Override
+    public String toString() {
+      if (value >= 0) {
+        return super.toString();
+      } else {
+        return ""IMPOSSIBLE"";
+      }
+    }
+  }
+
+  public static interface CJSolution {
+
+  }
+
+  // public static abstract class CodeJamSolver<S extends CJSolution> {
+
+  public void run() throws IOException {
+    InputReader reader = new InputReader();
+    reader.setInput(new BufferedReader(new InputStreamReader(System.in)));
+    setInput(reader);
+    setOutput(new SolutionWriter(new BufferedWriter(new OutputStreamWriter(System.out))));
+    // long time = System.currentTimeMillis();
+    solve();
+  }
+
+  private InputReader reader;
+  private SolutionWriter writer;
+  private CJSolution solution;
+  private boolean showProgress;
+
+  public int[] p;
+
+  public InputReader getReader() {
+    return reader;
+  }
+
+  public SolutionWriter getWriter() {
+    return writer;
+  }
+
+  public void solve() throws IOException {
+    for (int test = 0; test < reader.getNTestCases(); ++test) {
+      long start = System.currentTimeMillis();
+      readCase();
+      solution = solveCase();
+      writeSolution();
+      if (showProgress && System.currentTimeMillis() - start > 2000) {
+        // System.err.println(""solved "" + (test + 1) + "" / "" + reader.getNTestCases());
+      }
+    }
+
+    writer.dispose();
+  }
+
+  // public abstract void readCase() throws IOException;
+
+  // public abstract S solveCase();
+
+  private void writeSolution() throws IOException {
+    writer.writeCase(solution);
+  }
+
+  public void setInput(InputReader reader) {
+    this.reader = reader;
+  }
+
+  public void setOutput(SolutionWriter writer) {
+    this.writer = writer;
+  }
+
+  public void showProgress(boolean show) {
+    this.showProgress = show;
+  }
+  // }
+
+  public static class BooleanSolution implements CJSolution {
+    private boolean value;
+
+    public BooleanSolution(boolean v) {
+      value = v;
+    }
+
+    @Override
+    public String toString() {
+      if (value) {
+        return ""YES"";
+      }
+      return ""NO"";
+    }
+
+  }
+
+  public static class InputReader {
+
+    private Reader reader;
+    private LineNumberReader lnReader;
+    private boolean disposed;
+
+    private int numTestCases;
+
+    public Reader getReader() {
+      return reader;
+    }
+
+    public LineNumberReader getLineNumberReader() {
+      if (lnReader == null) {
+        if (reader == null) {
+          return null;
+        }
+        lnReader = new LineNumberReader(reader);
+      }
+      return lnReader;
+    }
+
+    public int getLineNumber() {
+      if (reader == null) {
+        throw new IllegalStateException(""no stream"");
+      } else {
+        return getLineNumberReader().getLineNumber();
+      }
+
+    }
+
+    public void dispose() throws IOException {
+      if (reader != null) {
+        reader.close();
+      }
+      disposed = true;
+    }
+
+    public int getNTestCases() throws IOException {
+      init();
+      return numTestCases;
+    }
+
+    protected void init() throws IOException {
+      if (reader == null) {
+        throw new IllegalStateException(""no stream"");
+      }
+      if (disposed) {
+        throw new IllegalStateException(""reader disposed"");
+      }
+      LineNumberReader inputReader = getLineNumberReader();
+      if (getLineNumber() == 0) {
+        String line = inputReader.readLine();
+        numTestCases = Integer.parseInt(line);
+      }
+    }
+
+    public String readLine() throws IOException {
+      init();
+      return getLineNumberReader().readLine();
+    }
+
+    public int readInteger() throws IOException {
+      init();
+      String line = getLineNumberReader().readLine();
+      return Integer.parseInt(line);
+    }
+
+    public double readDouble() throws IOException {
+      init();
+      String line = getLineNumberReader().readLine();
+      return Double.parseDouble(line);
+    }
+
+    /**
+     * Read a string of digits like ""0 0"", or ""4 01243"" into a list of ints.
+     *
+     * @param checked If <code>true</code>, the digit string is preceded by the number of digits -
+     *          1.
+     */
+    public List<Integer> readDigits(boolean checked) throws IOException {
+      init();
+
+      String line = getLineNumberReader().readLine();
+      StringTokenizer tokenizer = new StringTokenizer(line);
+
+      ArrayList<Integer> result;
+      int size = -1;
+      if (checked) {
+        size = Integer.parseInt(tokenizer.nextToken());
+        result = new ArrayList<Integer>(size + 1);
+      } else {
+        result = new ArrayList<Integer>();
+      }
+
+      line = tokenizer.nextToken();
+      for (int i = 0; i < line.length(); ++i) {
+        result.add(Integer.parseInt(line.substring(i, i + 1)));
+      }
+      return result;
+
+    }
+
+    public List<Integer> readCheckedIntegerList() throws IOException {
+      return readList(true, INTEGER_FILTER);
+    }
+
+    public List<Integer> readIntegerList() throws IOException {
+      return readList(false, INTEGER_FILTER);
+    }
+
+    public List<Long> readLongList() throws IOException {
+      return readList(false, LONG_FILTER);
+    }
+
+    public List<Long> readCheckedLongList() throws IOException {
+      return readList(true, LONG_FILTER);
+    }
+
+    public List<BigInteger> readCheckedBigIntegerList() throws IOException {
+      return readList(true, BIG_INTEGER_FILTER);
+    }
+
+    public List<BigInteger> readBigIntegerList() throws IOException {
+      return readList(false, BIG_INTEGER_FILTER);
+    }
+
+    public List<String> readStringList() throws IOException {
+      return readList(false, STRING_FILTER);
+    }
+
+    public List<String> readCheckedStringList() throws IOException {
+      return readList(true, STRING_FILTER);
+    }
+
+    public List<Double> readDoubleList() throws IOException {
+      return readList(false, DOUBLE_FILTER);
+    }
+
+    public List<Double> readCheckedDoubleList() throws IOException {
+      return readList(true, DOUBLE_FILTER);
+    }
+
+    private static final Filter<Integer> INTEGER_FILTER = new Filter<Integer>() {
+      @Override
+      public Integer filter(String token) {
+        return Integer.parseInt(token);
+      }
+    };
+
+    private static final Filter<BigInteger> BIG_INTEGER_FILTER = new Filter<BigInteger>() {
+      @Override
+      public BigInteger filter(String token) {
+        return new BigInteger(token);
+      }
+    };
+    private static final Filter<Long> LONG_FILTER = new Filter<Long>() {
+      @Override
+      public Long filter(String token) {
+        return Long.parseLong(token);
+      }
+    };
+
+    private static final Filter<String> STRING_FILTER = new Filter<String>() {
+      @Override
+      public String filter(String token) {
+        return token;
+      }
+    };
+
+    private static final Filter<Double> DOUBLE_FILTER = new Filter<Double>() {
+      @Override
+      public Double filter(String token) {
+        return Double.parseDouble(token);
+      }
+    };
+
+    public static interface Filter<T> {
+      public T filter(String token);
+    }
+
+    /**
+     * Reads an array separated by spaces.
+     *
+     * @param checked If <code>true</code>, the first value is the size of the array
+     * @param tokenFilter Converts the strings between the spaces to something of type T
+     * @return a list of elements of type T
+     * @throws IOException
+     */
+    public <T> List<T> readList(boolean checked, Filter<T> tokenFilter) throws IOException {
+      init();
+
+      ArrayList<T> result;
+      if (checked) {
+        int size = readInteger();
+        result = new ArrayList<T>(size);
+      } else {
+        result = new ArrayList<T>();
+      }
+
+      String line = getLineNumberReader().readLine();
+      StringTokenizer tokenizer = new StringTokenizer(line);
+
+      for (; tokenizer.hasMoreTokens();) {
+        String token = tokenizer.nextToken();
+
+        result.add(tokenFilter.filter(token));
+      }
+      return result;
+    }
+
+    public void setInput(Reader reader) {
+      this.reader = reader;
+      lnReader = null;
+    }
+
+  }
+
+  public static class PriorityHead<P extends Comparable<P>, V> {
+
+    private int capacity;
+
+    /**
+     * @return the capacity
+     */
+    public int getCapacity() {
+      return capacity;
+    }
+
+    /**
+     * @param capacity the capacity to set
+     */
+    public void setCapacity(int capacity) {
+      if (capacity <= 0) {
+        throw new IllegalArgumentException(""capacity must be > 0"");
+      }
+      this.capacity = capacity;
+    }
+
+    private LinkedList<Object[]> values = new LinkedList<Object[]>();
+
+    public PriorityHead(int capacity) {
+      this.capacity = capacity;
+    }
+
+    @SuppressWarnings(""unchecked"")
+    public void add(P priority, V value) {
+      if (values.size() == 0) {
+        values.add(new Object[] { priority, value });
+      }
+      if (priority.compareTo((P) values.getLast()[0]) > 0) {
+        for (ListIterator<Object[]> it = values.listIterator(); it.hasNext();) {
+          Object[] current = it.next();
+          if (priority.compareTo((P) current[0]) > 0) {
+            it.previous();
+            it.add(new Object[] { priority, value });
+            it.next();
+            if (values.size() > capacity) {
+              values.removeLast();
+            }
+            return;
+          }
+        }
+      }
+    }
+
+    public int size() {
+      return values.size();
+    }
+
+    @SuppressWarnings(""unchecked"")
+    public P getPriority(int i) {
+      return (P) values.get(i)[0];
+    }
+
+    @SuppressWarnings(""unchecked"")
+    public V getValue(int i) {
+      return (V) values.get(i)[1];
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder builder = new StringBuilder(""["");
+      for (Object[] entry : values) {
+        if (builder.length() > 1) {
+          builder.append("", "");
+        }
+        builder.append(""("").append(entry[0]).append("","").append(entry[1]).append("")"");
+      }
+      builder.append(""]"");
+      return builder.toString();
+    }
+  }
+
+  public static class SimpleSolution<T extends Comparable<T>>
+      implements CJSolution, Comparable<SimpleSolution<T>> {
+
+    protected T value;
+
+    public SimpleSolution(T v) {
+      value = v;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @Override
+    public int compareTo(SimpleSolution<T> o) {
+      if (o == null) {
+        return -1;
+      }
+      if (value == null) {
+        return o.value == null ? 0 : -1;
+      }
+      if (o.value == null) {
+        return 1;
+      }
+      return value.compareTo(o.value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof SimpleSolution<?>) {
+        try {
+          SimpleSolution<T> other = (SimpleSolution<T>) obj;
+          if (value == null) {
+            return other.value == null;
+          }
+          return value.equals(other.value);
+        } catch (ClassCastException e) {
+          return false;
+        }
+      }
+      return false;
+    }
+  }
+
+  public static abstract class SolutionIterator<VALUE extends Comparable<VALUE>, CJSOLUTION extends CJSolution> {
+    private int[] current;
+    private Integer[][] delta;
+    private int min;
+    private int max;
+    private int verbose = 1000;
+    private long start;
+
+    /**
+     * @return the verbose
+     */
+    public final boolean isVerbose() {
+      return verbose > 0;
+    }
+
+    /**
+     * @param verbose the verbose to set
+     */
+    public void setVerbose(int millis) {
+      this.verbose = millis;
+    }
+
+    public SolutionIterator(int length, int min, int max) {
+      if (max <= min) {
+        throw new IllegalArgumentException(max + "" <= "" + min);
+      }
+      current = new int[length];
+      for (int i = 0; i < current.length; ++i) {
+        current[i] = min;
+      }
+      delta = new Integer[length][3];
+      this.min = min;
+      this.max = max;
+      start = System.currentTimeMillis();
+    }
+
+    public boolean hasNext() {
+      int i;
+      for (i = 0; i < current.length - 1 && current[i] == max; ++i) {
+        ;
+      }
+      return i < current.length - 1 || current[i] != max;
+    }
+
+    public int[] advance() {
+      int numChange = 0;
+
+      for (int i = 0; i < current.length && (i == 0 || current[i - 1] == min); ++i) {
+        if (isVerbose() && i >= current.length - 2 && i + 1 < current.length
+            && System.currentTimeMillis() - start > verbose) {
+
+          // System.err.println(""..."" + current.length + ""..."" + +current[i] + "" "" + current[i + 1]
+          // +
+          // "" / "" + max);
+        }
+        int newValue = current[i] == max ? min : (current[i] + 1);
+        delta[numChange][0] = i;
+        delta[numChange][1] = current[i];
+        delta[numChange++][2] = current[i] = newValue;
+
+      }
+      if (numChange < delta.length) {
+        delta[numChange][0] = null;
+      }
+      return current;
+    }
+
+    public abstract VALUE solve(Solution solver, int[] vector, Integer[][] delta);
+
+    public abstract CJSolution createSolution(int[] optSolution, VALUE optValue);
+
+    public CJSolution solveDumb(Solution solver, VALUE benchmark) {
+      return solveDumb(solver, benchmark, true, false);
+    }
+
+    public CJSolution solveDumb(Solution solver) {
+      return solveDumb(solver, null, false, false);
+    }
+
+    public CJSolution findDumb(Solution solver) {
+      return solveDumb(solver, null, false, true);
+    }
+
+    public CJSolution solveDumb(Solution solver, VALUE benchmark, boolean compare,
+        boolean findFirst) {
+      VALUE optValue = null;
+      int[] optSolution = null;
+      for (; hasNext();) {
+        advance();
+        VALUE value = solve(solver, current, delta);
+        if (value != null && (optValue == null || value.compareTo(optValue) < 0)) {
+          optValue = value;
+          optSolution = current.clone();
+          if (findFirst) {
+            break;
+          }
+        }
+      }
+      if (compare) {
+        if ((optValue == null && benchmark != null) || (optValue != null && benchmark == null)
+            || (optValue != null && optValue.compareTo(benchmark) != 0)) {
+          throw new RuntimeException(""non optimal "" + optValue + "" != "" + benchmark);
+        }
+      }
+      return createSolution(optSolution, optValue);
+
+    }
+  }
+
+  public static class SolutionWriter {
+
+    private Writer writer;
+    private int caseNumber;
+    private boolean disposed;
+
+    public SolutionWriter(Writer writer) {
+      this.writer = writer;
+    }
+
+    public SolutionWriter() {
+      // now writer
+    }
+
+    public void dispose() throws IOException {
+      if (writer != null) {
+        writer.close();
+      }
+      disposed = true;
+    }
+
+    public void clearFile(String path) {
+      File file = new File(path);
+      if (file.exists() && file.canWrite()) {
+        file.delete();
+      }
+    }
+
+    public void writeCase(CJSolution solution) throws IOException {
+      init();
+      caseNumber++;
+      if (solution.toString().startsWith(""\n"")) {
+        writer.write(""Case #"" + caseNumber + "":"");
+      } else {
+        writer.write(""Case #"" + caseNumber + "": "");
+      }
+      writer.write(solution.toString());
+      writer.write(""\n"");
+      writer.flush();
+    }
+
+    protected void init() {
+      if (disposed) {
+        throw new IllegalStateException(""writer was disposed"");
+      }
+    }
+
+    public void setOutput(Writer writer) {
+      this.writer = writer;
+    }
+
+  }
+
+  public static class Util {
+
+    public static final double EPS = 1e-6;;
+    public static final double EPS2 = 1e-9;;
+
+    private static NumberFormatter doubleFormat;
+
+    static {
+      DecimalFormat decimalFormat = new DecimalFormat();
+      decimalFormat.setMinimumFractionDigits(1);
+      decimalFormat.setMaximumFractionDigits(6);
+      doubleFormat = new NumberFormatter(decimalFormat);
+    }
+
+    public static long[] convertLong(List<Long> list) {
+      long[] result = new long[list.size()];
+      for (int i = 0; i < result.length; ++i) {
+        result[i] = list.get(i);
+      }
+      return result;
+    }
+
+    public static int[] convertInt(List<Integer> list) {
+      int[] result = new int[list.size()];
+      for (int i = 0; i < result.length; ++i) {
+        result[i] = list.get(i);
+      }
+      return result;
+    }
+
+    public static double[] convertDouble(List<Double> list) {
+      double[] result = new double[list.size()];
+      for (int i = 0; i < result.length; ++i) {
+        result[i] = list.get(i);
+      }
+      return result;
+    }
+
+    public static void deepFill(boolean[][] solved, boolean b) {
+      for (int i = 0; i < solved.length; ++i) {
+        for (int j = 0; j < solved[i].length; ++j) {
+          solved[i][j] = b;
+        }
+      }
+    }
+
+    public static void deepFill(int[][] solved, int b) {
+      for (int i = 0; i < solved.length; ++i) {
+        for (int j = 0; j < solved[i].length; ++j) {
+          solved[i][j] = b;
+        }
+      }
+    }
+
+    public static void deepFill(long[][] solved, long b) {
+      for (int i = 0; i < solved.length; ++i) {
+        for (int j = 0; j < solved[i].length; ++j) {
+          solved[i][j] = b;
+        }
+      }
+    }
+
+    public static void deepFill(double[][] solved, double b) {
+      for (int i = 0; i < solved.length; ++i) {
+        for (int j = 0; j < solved[i].length; ++j) {
+          solved[i][j] = b;
+        }
+      }
+    }
+
+    public static String formatDouble(double m) {
+      try {
+        return doubleFormat.valueToString(m);
+      } catch (ParseException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    public static boolean equalsArray(int[] solution, int[] solution2) {
+      if (solution.length != solution2.length) {
+        return false;
+      }
+      for (int i = 0; i < solution.length; ++i) {
+        if (solution[i] != solution2[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    public static boolean equalsArray(long[] solution, long[] solution2) {
+      if (solution.length != solution2.length) {
+        return false;
+      }
+      for (int i = 0; i < solution.length; ++i) {
+        if (solution[i] != solution2[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    public static boolean equalsArray(double[] solution, double[] solution2) {
+      if (solution.length != solution2.length) {
+        return false;
+      }
+      for (int i = 0; i < solution.length; ++i) {
+        if (!equalsDouble(solution[i], solution2[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    public static boolean equalsDouble(Double x, Double y) {
+      return equalsDouble(x, y, EPS);
+    }
+
+    public static boolean equalsDouble(Double x, Double y, double epsilon) {
+      // Check absolute precision.
+      if (-epsilon <= x - y && x - y <= epsilon) {
+        return true;
+      }
+
+      // Is x or y too close to zero?
+      if ((-epsilon <= x && x <= epsilon) || (-epsilon <= y && y <= epsilon)) {
+        return false;
+      }
+
+      // Check relative precision.
+      return (-epsilon <= (x - y) / x && (x - y) / x <= epsilon)
+          || (-epsilon <= (x - y) / y && (x - y) / y <= epsilon);
+    }
+
+    public static String toString(double[] solution) {
+      StringBuilder output = new StringBuilder();
+      for (double d : solution) {
+        output.append(""\n"").append(d);
+      }
+      return output.toString();
+    }
+
+    public static int compareTo(double[] solution, double[] solution2) {
+      if (solution.length != solution2.length) {
+        return solution.length - solution2.length;
+      }
+      for (int i = 0; i < solution.length; ++i) {
+        Double disc = solution[i] - solution2[i];
+        if (Util.equalsDouble(disc, 0d, EPS2)) {
+          continue;
+        }
+        if (disc > 0) {
+          return 1;
+        }
+        if (disc < 0) {
+          return -1;
+        }
+      }
+      return 0;
+    }
+
+  }
+}
+"
+390,40,"package SavingTheUniverseAgain;
+
+import java.util.Scanner;
+
+class Solution {
+
+    private static Scanner sc;
+    private int d;
+    private boolean[] prog;
+
+    private String run() {
+        d = sc.nextInt();
+        char[] in = sc.next().toCharArray();
+        sc.nextLine();
+        prog = new boolean[in.length];
+
+        for (int i = 0; i < in.length; i++) {
+            prog[i] = in[i] == 'C';
+        }
+
+        int swaps = 0;
+        while (getDamage() > d) {
+            boolean shoot = false;
+            for (int i = prog.length-1; i>= 0; i--) {
+                if (!prog[i]) {
+                    shoot = true;
+                } else {
+                    if (shoot) {
+                        prog[i+1] = true;
+                        prog[i] = false;
+                        swaps++;
+                        break;
+                    }
+                }
+                if (i == 0) {
+                    return ""IMPOSSIBLE"";
+                }
+            }
+        }
+        return """" + swaps;
+    }
+
+    private long getDamage() {
+        int charge = 1;
+        long damage = 0;
+        for (boolean aProg : prog) {
+            if (aProg) {
+                charge *= 2;
+            } else {
+                damage += charge;
+            }
+        }
+        return damage;
+    }
+
+    public static void main(String[] args) {
+        sc = new Scanner(System.in);
+        int tests = sc.nextInt();
+        for (int t=0; t<tests; t++) {
+            System.out.println(""Case #""+t+"": ""+new Solution().run());
+        }
+    }
+}
+"
+114,11,"import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.util.Scanner;
+
+public class Solution {
+
+    public static void main(String[] args) throws Exception {
+        Scanner scanner = new Scanner(new BufferedInputStream(new FileInputStream(""input.txt"")));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(""output.txt""));
+        int numberOfTestcases = scanner.nextInt();
+        for (int i = 1; i <= numberOfTestcases; i++) {
+            int D = scanner.nextInt();
+            String command = scanner.next();
+            command = command.toLowerCase();
+
+            if (countDamage(command) <= D) {
+                //zero
+                bw.write(""Case #"" + i + "": 0"");
+                bw.newLine();
+                continue;
+            }
+            if (countS(command) > D) {
+                //impossible
+                bw.write(""Case #"" + i + "": IMPOSSIBLE"");
+                bw.newLine();
+                continue;
+            }
+            int count = 0;
+            while (true) {
+                int start = command.lastIndexOf(""cs"");
+                if (start < 0) {
+                    bw.write(""Case #"" + i + "": IMPOSSIBLE"");
+                    bw.newLine();
+                    break;
+                }
+                command = command.substring(0, start) + ""sc"" + command.substring(start + 2, command.length());
+                count++;
+                if (countDamage(command) <= D) {
+                    bw.write(""Case #"" + i + "": "" + count);
+                    bw.newLine();
+                    break;
+                }
+            }
+        }
+        scanner.close();
+        bw.close();
+    }
+
+    private static int countDamage(String command) {
+        int currentDamage = 1;
+        int total = 0;
+        for (int i = 0; i < command.length(); i++) {
+            if (command.charAt(i) == 'c') {
+                currentDamage *= 2;
+            }
+            if (command.charAt(i) == 's') {
+                total += currentDamage;
+            }
+        }
+        return total;
+    }
+
+    private static int countS(String command) {
+        int total = 0;
+        for (int i = 0; i < command.length(); i++) {
+            if (command.charAt(i) == 's') {
+                total++;
+            }
+        }
+        return total;
+    }
+}"
+262,28,"/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+/**
+ *
+ * @author kamranmaharov
+ */
+public class Solution {
+
+    private static int ZERO = 500;
+    
+    private static boolean wa;
+    private static boolean found;
+    private static boolean[][] orchard;
+    
+    /**
+     * @param args the command line arguments
+     */
+    
+    private static void print(int x, int y, int times, BufferedReader in, BufferedWriter out) 
+                throws Exception {
+        for (int i=1; i<=times; ++i) {
+            if (!found) {
+                out.write((ZERO+x) + "" "" + (ZERO+y) + ""\n"");
+                out.flush();
+                String[] line = in.readLine().split("" "");
+                int R = Integer.parseInt(line[0]);
+                int C = Integer.parseInt(line[1]);
+                if (R < 0 || C < 0) {System.exit(0);}
+                else if (R < 1 || C < 1) {found = true;}
+                else {orchard[R-ZERO][C-ZERO] = true;}
+            }
+        }
+    }
+    
+    private static boolean deployed(int x, int y) {
+        return found || orchard[x][y];
+    }
+    
+    public static void main(String[] args) throws Exception {
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
+        
+        wa = false;
+        int T = Integer.parseInt(in.readLine());
+        for (int ts=1; ts<=T; ++ts) {
+            if (wa) {break;}
+            int A = Integer.parseInt(in.readLine());
+            
+            found = false;
+            orchard = new boolean[16][16];
+            
+            print(1, 1, 18, in, out);
+            print(14, 1, 18, in, out);
+            print(1, 14, 18, in, out);
+            print(14, 14, 18, in, out);
+            
+            for (int i=2; i<=13; ++i) {
+                print(i, 1, 6, in, out);
+                print(1, i, 6, in, out);
+                print(i, 14, 6, in, out);
+                print(14, i, 6, in, out);
+            }
+            
+            for (int i=2; i<=13; ++i) {
+                for (int j=2; j<=13; ++j) {
+                    print(i, j, 2, in, out);
+                }
+            }
+            
+            for (int i=0; i<=15; ++i) {
+                for (int j=0; j<=15; ++j) {
+                    if (!deployed(i,j)) {
+                        int r=-1;
+                        int c=-1;
+                        for (int i1=1; i1<=14 && r<0; ++i1) {
+                            for (int j1=1; j1<=14 && r<0; ++j1) {
+                                if (Math.abs(i1-i)<=1 && Math.abs(j1-j)<=1) {
+                                    r=i1;
+                                    c=j1;
+                                }
+                            }
+                        }
+                        
+                        while (!deployed(i,j)) {
+                            print(r, c, 1, in, out);
+                        }
+                    }
+                }
+            }
+        }
+        
+        in.close();
+        out.close();
+    }
+    
+}
+"
+24,2,"import java.util.*;
+import java.io.*;
+import java.lang.*;
+import java.math.*;
+public class Solution {
+    public static void main(String[] args) throws Exception {
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
+        int T = Integer.parseInt(bf.readLine());
+        for(int t=0; t<T; t++) {
+          int n = Integer.parseInt(bf.readLine());
+          StringTokenizer st = new StringTokenizer(bf.readLine());
+          int[] a = new int[(n+1)/2];
+          int[] b = new int[n/2];
+          for(int i=0; i<n; i++) {
+            if(i%2 == 0)
+              a[i/2] =  Integer.parseInt(st.nextToken());
+            else b[i/2]  =  Integer.parseInt(st.nextToken());
+          }
+          Arrays.sort(a);
+          Arrays.sort(b);
+          boolean sorted = true;
+          int index = -1;
+          for(int i=0; i<n-1; i++) {
+            if(i%2 == 0) {
+              if(a[i/2] > b[i/2]) {
+                sorted = false;
+                index = i;
+                break;
+              }
+            }
+            else {
+              if(b[i/2] > a[i/2 + 1]) {
+                sorted = false;
+                index = i;
+                break;
+              }
+            }
+          }
+          out.print(""Case #""+(t+1)+"": "");
+          if(sorted) out.println(""OK"");
+          else out.println(index);
+        }
+        // StringTokenizer st = new StringTokenizer(bf.readLine());
+        // int[] a = new int[n];
+        // for(int i=0; i<n; i++) a[i] =  Integer.parseInt(st.nextToken());
+
+        out.close(); System.exit(0);
+    }
+
+
+}
+"
+546,56,"import java.util.*;
+import java.io.*;
+
+public class Solution {
+    public static int getDem(String a){
+        int damge = 0;
+        int currDem = 1;
+
+        for(char sd : a.toCharArray()){
+            if(sd == 'C')
+                currDem *= 2;
+            else
+                damge += currDem;
+        }
+        return damge;
+    }
+    public static void main(String args[]){
+        Scanner sc = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+
+        int noTest = sc.nextInt();
+        int caseCount = 1;
+
+        while(sc.hasNextLine()){
+            int d = sc.nextInt();
+            String attack = sc.next();
+            int count = 0;
+            boolean imm = false;
+
+            System.out.println(getDem(attack));
+            System.out.println(d);
+
+            while(getDem(attack) > d){
+                StringBuilder strb=new StringBuilder(attack);
+                int index=strb.lastIndexOf(""CS"");
+                if(index == -1) {
+                    imm = true;
+                    break;
+                }
+                strb.replace(index,2+index,""SC"");
+                attack = strb.toString();
+                count++;
+
+            }
+
+            if(imm)
+                System.out.println(""Case #"" + caseCount + "": IMPOSSIBLE"");
+            else
+                System.out.println(""Case #"" + caseCount + "": "" + count);
+
+            caseCount++;
+            if(noTest == caseCount)
+                return;
+        }
+
+    }
+}
+"
+581,60,"import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+public class Solution {
+	private static final int SIZE = 1000;
+	private static final int UP = 12;
+	private static final int RIGHT = 15;
+	private static final int DOWN = 18;
+	private static final int LEFT = 21;
+
+	private static final int UP_LEFT = 0;
+	private static final int UP_RIGHT = 1;
+	private static final int DOWN_RIGHT = 2;
+	private static final int DOWN_LEFT = 3;
+
+	public static void main(String[] args) {
+		Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+		int T = Integer.parseInt(in.nextLine());
+		for (int test = 0; test < T; test++) {
+			int A = Integer.parseInt(in.nextLine());
+			goGopher(A, in);
+		}
+		in.close();
+
+	}
+
+	private static void goGopher(int a, Scanner in) {
+		int[][] corners = new int[4][2];
+		corners = searchCorners(corners, a);
+		int turnTo = RIGHT;
+		while (turnTo != -1) {
+			if (turnTo == RIGHT) {
+				turnTo = moveToRight(corners, turnTo, in);
+			}
+			if (turnTo == DOWN) {
+				turnTo = moveToDown(corners, turnTo, in);
+			}
+			if (turnTo == LEFT) {
+				turnTo = moveToLeft(corners, turnTo, in);
+			}
+			if (turnTo == UP) {
+				turnTo = moveToUp(corners, turnTo, in);
+			}
+		}
+	}
+
+	private static int moveToUp(int[][] corners, int turnTo, Scanner in) {
+		int x = corners[DOWN_LEFT][0];
+		int y = corners[DOWN_LEFT][1];
+		while (!readAndCheck(in)) {
+			if (y + 1 <= corners[DOWN_LEFT][1]) {
+				System.out.println(x + "" "" + y);
+				y--;
+			} else {
+				turnTo = RIGHT;
+				return turnTo;
+			}
+		}
+		return -1;
+
+	}
+
+	private static int moveToLeft(int[][] corners, int turnTo, Scanner in) {
+		int x = corners[DOWN_RIGHT][0];
+		int y = corners[DOWN_RIGHT][1];
+		while (!readAndCheck(in)) {
+			if (x + 1 <= corners[DOWN_RIGHT][0]) {
+				System.out.println(x + "" "" + y);
+				x--;
+			} else {
+				turnTo = UP;
+				return turnTo;
+			}
+		}
+		return -1;
+
+	}
+
+	private static int moveToDown(int[][] corners, int turnTo, Scanner in) {
+		int x = corners[UP_RIGHT][0];
+		int y = corners[UP_RIGHT][1];
+		while (!readAndCheck(in)) {
+			if (y + 1 <= corners[UP_RIGHT][1]) {
+				System.out.println(x + "" "" + y);
+				y++;
+			} else {
+				turnTo = LEFT;
+				return turnTo;
+			}
+		}
+		return -1;
+	}
+
+	private static int moveToRight(int[][] corners, int turnTo, Scanner in) {
+		int x = corners[UP_LEFT][0];
+		int y = corners[UP_LEFT][1];
+		while (!readAndCheck(in)) {
+			if (x + 1 <= corners[UP_LEFT][0]) {
+				System.out.println(x + "" "" + y);
+				x++;
+			} else {
+				turnTo = DOWN;
+				return turnTo;
+			}
+		}
+		return -1;
+	}
+
+	private static int[][] searchCorners(int[][] corners, int a) {
+		corners[UP_LEFT][0] = (SIZE / 2) - (a / 4);// x
+		corners[UP_LEFT][1] = (SIZE / 2) + 1;// y
+
+		corners[UP_RIGHT][0] = (SIZE / 2) + (a / 4);// x
+		corners[UP_RIGHT][1] = (SIZE / 2) + 1;// y
+
+		corners[DOWN_RIGHT][0] = (SIZE / 2) + (a / 4);// x
+		corners[DOWN_RIGHT][1] = (SIZE / 2);// y
+
+		corners[DOWN_LEFT][0] = (SIZE / 2) - (a / 4);// x
+		corners[DOWN_LEFT][1] = (SIZE / 2);// y
+		return corners;
+	}
+
+	private static boolean readAndCheck(Scanner in) {
+		String temp = in.nextLine();
+		String[] response = temp.split("" "");
+		int i = Integer.parseInt(response[0]);
+		int j = Integer.parseInt(response[1]);
+		if (i < 1 || j < 1) {
+			return true;
+		}
+		return false;
+	}
+}
+"
+442,45,"import java.util.Scanner;
+import java.util.LinkedList;
+
+public class Solution
+{
+    public static void main (String[]args)
+    {
+        Scanner scan = new Scanner(System.in);
+        
+        int num = Integer.parseInt(scan.nextLine());
+        
+        for (int i = 0; i < num; i++)
+        {
+            String[] string = scan.nextLine().split("" "");
+            
+            int defense = Integer.parseInt(string[0]);
+            String laser = string[1];
+            
+            if (solve(defense,laser) == -1)
+                System.out.println(""Case #"" + (i + 1) + "": IMPOSSIBLE"");
+                
+            else
+                System.out.println(""Case #"" + (i + 1) + "": "" + solve(defense, laser));
+            
+            
+        }
+    }
+    
+    public static int solve(int defense, String s)
+	{
+		LinkedList<Integer> list = new LinkedList<Integer>();
+		
+		int sum = 0;
+		int count = 0;
+		int stringsize = s.length();
+		
+		for (int i = 0; i < s.length(); i++)
+		{
+			if (s.charAt(i) == 'C')
+			{
+				list.add(i);
+				count++;
+			}
+			
+			else
+			{
+				sum += (int)Math.pow(2, count);
+			}
+		}
+		
+		int retval = 0;
+			
+		while (list.size() != 0)
+		{
+			if (list.getLast() == stringsize - 1)
+			{
+				list.removeLast();
+				stringsize--;
+				
+				continue;
+			}
+			
+			int increments = stringsize - 1 - list.getLast();
+			int power = (int)Math.pow(2, list.size() - 1);
+			int diff = sum - defense;
+			
+			int ratio = (int)Math.ceil((double)diff / power);
+			
+			if (ratio <= increments)
+			{
+				retval += ratio;
+				return retval;
+			}
+			
+			else
+			{
+				sum -= power * increments;
+				retval += increments;
+				list.removeLast();
+				stringsize--;
+			}
+		}
+		
+		if (sum <= defense)
+		{
+			return 0;
+		}
+		
+		else
+			return -1;
+	}
+    
+    
+    
+}"
+323,34,"
+import java.math.MathContext;
+import java.util.Scanner;
+import java.util.StringJoiner;
+
+import static java.lang.Math.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int tCount = scanner.nextInt();
+
+        for (int t = 1; t <= tCount; t++) {
+            StringJoiner sb = new StringJoiner(""\n"");
+            double[][] result = solve(scanner.nextDouble());
+            sb.add(""Case #"" + t + "":"");
+            sb.add(toto(result));
+            System.out.println(sb.toString());
+        }
+    }
+
+    public static String toto(double[][] result) {
+        StringJoiner sb = new StringJoiner(""\n"");
+        for (double[] row : result) {
+            StringJoiner sj = new StringJoiner("", "");
+            for (double v : row) {
+                sj.add(Double.toString(v));
+            }
+            sb.add(sj.toString());
+        }
+        return sb.toString();
+    }
+
+    public static long f(long n) {
+        if (n == 1) return 1;
+        return n*f(n-1);
+    }
+
+    public static double mcos(double x) {
+        return 1-pow(x,2)/f(2)+pow(x,4)/f(4)-pow(x,6)/f(6)+pow(x,8)/f(8)-pow(x,10)/f(10);//+pow(x,12)/f(12);
+    }
+
+    public static double msin(double x) {
+        return x-pow(x,3)/f(3)+pow(x,5)/f(5)-pow(x,7)/f(7)+pow(x,9)/f(9)-pow(x,11)/f(11);//+pow(x,13)/f(13);
+    }
+
+    public static double[][] solve(double v) {
+        v = v + 0.0000004;
+//        v=sqrt(2);
+        double[][] res = new double[3][3];
+
+//        BigDecimal vv = new BigDecimal(v);
+//        BigDecimal DELTA = new BigDecimal(8.0).subtract(vv.multiply(vv).multiply(new BigDecimal(4.0)));
+//        BigDecimal ROOT = new BigDecimal(2.0).multiply(vv).add(DELTA.sqrt(MathContext.UNLIMITED));
+
+        MathContext mc = new MathContext(7);
+
+        double low = 0.0;
+        double high = PI / 3;
+        double mid = (low + high) / 2;
+        double area = cos(mid) + sin(mid);
+
+        while (abs(area - v) > 0.0000005 && abs(high - low) > 0.00000001) {
+            mid = (low + high) / 2;
+            area = cos(mid) + sin(mid);
+            if (area < v) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+
+        double angle = high;
+        if (v < 1.2) {
+            angle = low;
+        }
+//
+//
+//        double delta = 8-4*v*v;
+//
+//        double root = (2*v+sqrt(delta))/4;
+//        if (abs(root) > 1) {
+//            root = (2*v-sqrt(delta))/4;
+//        }
+//
+//        double angle = asin(root);
+//
+//        double toto = sin(angle) + cos(angle);
+
+        res[0][0] = 0.5;
+        res[1][1] = 0.5;
+        res[2][2] = 0.5;
+
+        double x1 =  cos(angle) * res[0][0] - sin(angle) * res[0][1];
+        double y1 =  sin(angle) * res[0][0] + cos(angle) * res[0][1];
+
+        double x2 =  cos(angle) * res[1][0] - sin(angle) * res[1][1];
+        double y2 =  sin(angle) * res[1][0] + cos(angle) * res[1][1];
+
+        res[0][0] = x1;
+        res[0][1] = y1;
+        res[1][0] = x2;
+        res[1][1] = y2;
+
+        return res;
+    }
+}
+"
+692,70,"import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+
+public class Solution{
+
+    public static void solve(Scanner in,int test){
+
+	int N = in.nextInt();
+	List<Integer> a = new ArrayList<Integer>();
+	List<Integer> b = new ArrayList<Integer>();
+
+	for(int i=0;i<N/2;i++){
+	    a.add(in.nextInt());
+	    b.add(in.nextInt());
+	}
+
+	if(N%2==1) a.add(in.nextInt());
+     
+	a.sort(null);
+	b.sort(null);
+	List<Integer> c = new ArrayList<Integer>();
+	for(int i=0;i<b.size();++i){
+	    c.add(a.get(i));
+	    c.add(b.get(i));
+	}
+	if(N%2==1) c.add(a.get(a.size()-1));
+
+	for(int i=1;i<c.size();++i){
+	    if(c.get(i)<c.get(i-1)){
+		System.out.printf(""Case #%d: %d\n"",test,i);
+		return;
+	    }
+	}
+	System.out.printf(""Case #%d: OK\n"",test);
+		
+    }
+		
+    
+    public static void main(String[] args){
+
+	Scanner in = new Scanner(System.in);
+	int test = in.nextInt();
+
+	for(int i=0;i<test;++i){
+	    solve(in,i+1);
+	}
+    }
+}
+"
+156,16,"import java.util.Arrays;
+import java.util.Scanner;
+
+public class Solution {
+	public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+		
+		int t = sc.nextInt();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for(int test = 0; test < t; test++) {
+			
+			int d = sc.nextInt();
+			
+			char[] p = sc.nextLine().trim().toCharArray();
+			int[] pp = new int[p.length];
+			
+			int dommage = 0;
+			int base = 1;
+			int idx = 0;
+			for(char c : p) {
+				if(c == 'S') {
+					dommage += base;
+					pp[idx] = base;
+				}
+				else
+					base *= 2;
+				idx++;
+			}
+						
+			if(dommage <= d) {
+				sb.append(""Case #"").append(test+1).append("": 0\n"");
+			} else {
+				sb.append(""Case #"").append(test+1).append("": "");
+				int change = 0;
+				for(int i = pp.length - 1; i >= 0; i--) {
+					if(i == 0) {
+						sb.append(""IMPOSSIBLE\n"");
+					} else if(pp[i] != 0){
+						if(pp[i - 1] == 0) {
+							pp[i - 1] = pp[i] / 2;
+							pp[i] = 0;
+							dommage -= pp[i - 1];
+							change++;
+							if(dommage <= d) {
+								sb.append(change).append(""\n"");
+								break;
+							}
+							i = Math.min(i + 2, pp.length);
+						}
+					}
+				}
+			}
+		}
+		
+		System.out.println(sb.toString());
+	}
+	
+	
+}
+"
+333,36,"import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int t = in.nextInt();  // Scanner has functions to read ints, longs, strings, chars, etc.
+        for (int i = 1; i <= t; ++i) {
+            int numberKol = in.nextInt();
+            final List<Integer> evenNumbers = new ArrayList<>(numberKol / 2 + 1);
+            final List<Integer> oddNumbers = new ArrayList<>(numberKol / 2 + 1);
+            for (int j = 0; j < numberKol; ++j) {
+                oddNumbers.add(in.nextInt());
+                ++j;
+                if (j < numberKol) {
+                    evenNumbers.add(in.nextInt());
+                }
+            }
+            System.out.println(""Case #"" + i + "": "" + getValue(getWrong(oddNumbers, evenNumbers)));
+        }
+    }
+
+    private static Integer getWrong(List<Integer> oddNumbers, List<Integer> evenNumbers) {
+        Collections.sort(oddNumbers);
+        Collections.sort(evenNumbers);
+        int length = Math.min(evenNumbers.size(), oddNumbers.size());
+        for (int i = 0; i < length; ++i) {
+            if (oddNumbers.get(i) > evenNumbers.get(i)) {
+                return i + i;
+            }
+            if ((i + 1 < oddNumbers.size()) && (oddNumbers.get(i + 1) < evenNumbers.get(i))) {
+                return i + i + 1;
+            }
+        }
+        return null;
+    }
+
+    private static String getValue(Integer position) {
+        return Objects.isNull(position) ? ""OK"" : position.toString();
+    }
+}
+"
+389,40,"//package TroubleSort;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Scanner;
+
+class Solution {
+
+    private static Scanner sc;
+    private int[] list;
+
+    private String run() {
+        int n = sc.nextInt();
+        list = new int[n];
+        for (int i=0; i<n; i++) {
+            list[i] = sc.nextInt();
+        }
+        sc.nextLine();
+
+        boolean change = true;
+        while (change) {
+            change = false;
+            for (int i=0; i<n-2; i++) {
+                if (list[i] > list[i+2]) {
+                    change = true;
+                    int temp = list[i];
+                    list[i] = list[i+2];
+                    list[i+2] = temp;
+                }
+            }
+        }
+
+        for (int i=0; i<n-1; i++) {
+            if (list[i] > list[i+1]) {
+                return """" + i;
+            }
+        }
+        return ""OK"";
+    }
+
+    public static void main(String[] args) {
+        sc = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int tests = sc.nextInt();
+        for (int t=0; t<tests; t++) {
+            System.out.println(""Case #""+(t+1)+"": ""+new Solution().run());
+        }
+    }
+}
+"
+779,80,"import java.util.Scanner;
+
+public class Solution {
+	
+	public static void main(String[] args) {
+		Scanner sc=new Scanner(System.in);
+		int test=sc.nextInt();
+		int[] out=new int[test];
+		for (int i = 0; i < test; i++) {
+			int n=sc.nextInt();
+			int[] in=new int[n];
+			
+			for (int j = 0; j < n; j++) {
+				in[j]=sc.nextInt();
+			}
+			boolean done=false;
+			while (!done) {
+				done=true;
+				for (int j = 0; j < n-2; j++) {
+					//for (int j2 = 0; j2 < n; j2++)
+					//	System.out.print(in[j2]);
+					//System.out.println();
+					if (in[j]>in[j+2]) {
+						done=false;
+						int temp=in[j];
+						in[j]=in[j+2];
+						in[j+2]=temp;
+					}	
+					}
+			}
+			
+			for (int j = 0; j < n-1; j++)
+					if (in[j]>in[j+1]) {
+						out[i]=j+1;
+						break;
+					}
+		}
+		
+		for (int i = 0; i < test; i++) {
+			if(out[i]==0)
+				System.out.println(""Case #""+(i+1)+"": OK"");
+			else
+				System.out.println(""Case #""+(i+1)+"": ""+out[i]-1);
+		}
+	
+	
+	}
+}"
+752,77,"
+import java.io.*;
+
+public class Solution {
+	static String line = null;
+	public static void main(String input[]) {
+		String input_file = input[0];//""input.txt"";
+		String output_file = input[1]; //""output.txt"";
+		
+		int count_line=1;
+		int total_lines=0;
+		try {
+            FileReader fileReader = new FileReader(input_file);
+            FileWriter fileWriter = new FileWriter(output_file);
+            
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            line = bufferedReader.readLine();
+            total_lines=Integer.valueOf(line);
+            if(total_lines >100 || total_lines < 1) {
+            	bufferedWriter.write(""T invalid"");
+                bufferedReader.close();
+                bufferedWriter.close();
+                return;            	
+            }
+            while(((line = bufferedReader.readLine()) != null) && (count_line<=total_lines)){
+            	//System.out.println(line);
+                //System.out.println(""Case #""+ count_line + "": "" + line_result);
+                //bufferedWriter.write(""Case #""+ count_line + "": "" + line_result + ""\n"");
+            	troublesort();
+            	String result = verifysort();
+            	System.out.println(""Case #""+ count_line + "": "" + result);
+                bufferedWriter.write(""Case #""+ count_line + "": "" + result + ""\n"");
+                count_line++;
+
+            }   
+
+            bufferedReader.close();
+            bufferedWriter.close();
+        }
+		catch(FileNotFoundException ex) {
+            System.out.println(""FileNotFoundException"");                
+        }
+        catch(IOException ex) {
+            System.out.println(""Error while reading file: "" + input_file);                  
+
+        }
+
+	}
+	static void troublesort(){
+		boolean done=false;
+		while(!done) {
+			done=true;
+			for(int i = 0; i < line.length()-2; i++) {
+				if(line.charAt(i) > line.charAt(i+2)) {
+					done = false;
+					line = line.substring(0, i) + line.charAt(i+2) + line.charAt(i+1) + line.charAt(i) + line.substring(i+2+1);
+					//System.out.println(line +"" : "" + i);
+				}
+
+			}
+		}
+		
+	}
+	static String verifysort() {
+		boolean done=false;
+		while(!done) {
+			done=true;
+			for(int i = 0; i < line.length()-1; i++) 
+				if(line.charAt(i) > line.charAt(i+1))
+					return String.valueOf(i);
+		}
+		return ""OK"";
+	}
+
+}
+"
+96,9,"import java.io.*;
+import java.util.*;
+class Solution
+{
+    public static String swap(String s)
+    {
+        String str="""";
+        int i,l=s.length();
+        for(i=0;i<l-1;i++)
+        {
+            if(((s.charAt(i)=='c')||(s.charAt(i)=='C'))&&((s.charAt(i+1)=='s')||(s.charAt(i+1)=='S')))
+            {
+                str=s.substring(0,i)+""sc""+s.substring(i+2,l);
+                break;
+            }
+        }
+        return str;
+    }
+    public static int findsum(String s)
+    {
+        int i,l=s.length(),init=1,add=0;
+        for(i=0;i<l;i++)
+        {
+            if((s.charAt(i)=='c')||(s.charAt(i)=='C'))
+                init*=2;
+            else
+                add+=init;
+        }
+        return add;
+    }
+    public static int findmoves(String s,long d)
+    {
+        int i,count=0,flag=0;
+        long add=0;
+        int l=s.length();
+        while(flag==0)
+        {
+            add=findsum(s);
+            if(add<=d)
+            {
+                flag=1;
+            }
+            else
+            {
+                s=swap(s);
+                if(s.compareTo("""")==0)
+                {
+                    count=-1;
+                    break;
+                }
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public static void main(String args[])throws IOException
+    {
+        int i;
+        long d;
+        String s;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Scanner sc=new Scanner(System.in);
+        int n=Integer.parseInt(br.readLine());
+        String a[]=new String[n];
+        long ds[]=new long[n];
+        int moves[]=new int[n];
+        for(i=0;i<n;i++)
+        {
+            ds[i]=sc.nextLong();
+            a[i]=sc.next();
+        }
+        for(i=0;i<n;i++)
+        {
+            d=ds[i];
+            s=a[i];
+            moves[i]=findmoves(s,d);
+        }
+        
+        for(i=0;i<n;i++)
+        {
+            if(moves[i]==-1)
+                System.out.println(""Case #""+(i+1)+"": IMPOSSIBLE"");
+            else
+                System.out.println(""Case #""+(i+1)+"": ""+moves[i]);
+        }
+    }
+}"
+204,21,"import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Solution {
+
+	public static void main(String[] args) throws IOException {
+
+		// Used to indicate whether file is read from directory or passed by argument
+		boolean submit = true;
+
+		// Scanner
+		Scanner s = null;
+
+		// Creating two arrays, the array which holds input and the solution array
+		int[] shield_numbers;
+
+		String[] line, robot_programs;
+
+		String storage = "" "";
+
+		// Holds list read in from file
+
+		// Reading in first line to store the first line
+		int count;
+
+		// Try catch block to catch any file not found exceptions
+		try {
+
+			// If we decide to read by passed argument we fall in here
+			if (submit == true) {
+				s = new Scanner(System.in);
+
+			}
+
+			else {
+
+				// Otherwise we read in the file from the directory of the class
+				s = new Scanner(new File(System.getProperty(""user.dir"") + ""\\src\\input.txt""));
+			}
+		} catch (IOException e) {
+
+			e.printStackTrace();
+		}
+
+		count = Integer.parseInt(s.nextLine());
+
+		shield_numbers = new int[count];
+		robot_programs = new String[count];
+
+		for (int i = 0; i < count; i++) {
+			line = s.nextLine().split("" "");
+			shield_numbers[i] = Integer.parseInt(line[0]);
+			robot_programs[i] = line[1];
+
+		}
+
+		for (int i = 0; i < count; i++) {
+			storage = ""Case #"" + Integer.toString(i + 1) + "": "";
+			storage += bubbleSort(robot_programs[i].split(""""), shield_numbers[i]);
+
+			System.out.println(storage);
+
+		}
+		
+		System.exit(0);
+
+	}
+
+	public static String bubbleSort(String[] sortee, int shield_value) {
+
+		// Variables used to store two variables
+		String temp1, temp2 = "" "";
+
+		String return_value = "" "";
+
+		int damage_value = 1;
+
+		int damage_done = 0;
+
+		int hacks_done = 0;
+
+		// Indicates whether or not
+		// our list is sorted
+		boolean swapped = true;
+
+		// A counter
+		int x = 0;
+
+		/*
+		 * Keeps on looping while the list isn't sorted completely
+		 */
+
+		while (swapped == true) {
+			damage_value = 1;
+
+			damage_done = 0;
+
+			for (int i = 0; i < sortee.length; i++) {
+
+				if (sortee[i].equals(""S""))
+					damage_done += damage_value;
+
+				else
+					damage_value *= 2;
+
+			}
+
+			if (damage_done <= shield_value)
+				swapped = false;
+
+			else {
+				// Increasing the counter on each loop
+				x++;
+
+				// Resetting the boolean value so we can check again
+				swapped = false;
+
+				// Iterate through the list while (sortee.length - x) is greater than 0
+				for (int i = 0; i < sortee.length - x; i++) {
+
+					/*
+					 * We store the Nth value in temp1 We store the N + 1th value in temp2
+					 */
+					temp1 = sortee[i];
+					temp2 = sortee[i + 1];
+
+					/*
+					 * If temp1 is less than temp2 this means that the list is not sorted so we swap
+					 * the two values and set our boolean to true
+					 */
+					if (temp1.equals(""C"") && temp2.equals(""S"")) {
+						sortee[i] = temp2;
+						sortee[i + 1] = temp1;
+						swapped = true;
+						hacks_done++;
+					}
+
+				}
+			}
+		}
+
+		if (damage_done <= damage_value)
+			return_value = Integer.toString(hacks_done);
+
+		else
+			return_value = ""IMPOSSIBLE"";
+
+		return return_value;
+	}
+
+}
+"
+604,63,"import java.util.Scanner;
+import java.lang.Math;
+
+public class Solution{
+    //It is a function of calculating total damage.
+    public static int calShoot(char[] inputString){
+        int shoot = 0, damage = 0;
+        
+        for(int i = 2; i < inputString.length; i++){
+            if(inputString[i]=='S')
+            shoot+=Math.pow(2,damage);
+            else if(inputString[i]=='C')
+            damage++;
+            //other is error
+        }
+        return shoot;
+    }
+    
+    public static void main(String[] args){
+        Scanner input;
+        char inputString[];
+        int shoot, inputTimes;
+        
+        input = new Scanner(System.in);
+        inputTimes = Integer.parseInt(input.nextLine());
+		for (int times = 1; times <= inputTimes; times++) {
+			int NumberOfChanges = 0;
+			boolean impossibleInput = false; // possible = true, impossible = false 
+			//INPUT
+			inputString = input.nextLine().toCharArray();
+			shoot = calShoot(inputString);
+			while (shoot > inputString[0] - '0') {
+				for (int i = inputString.length-1; 2 < i; i--) {
+					if (inputString[i] == 'S' && inputString[i - 1] == 'C') {
+						inputString[i] = inputString[i - 1];
+						inputString[i - 1] = 'S';
+						NumberOfChanges++;
+						break;
+					}
+				}
+				if(NumberOfChanges==0){
+					impossibleInput = true;
+					break;	
+				}
+				shoot = calShoot(inputString);
+			}
+			//OUTPUT
+			if(!impossibleInput)
+				System.out.println(""Case #""+times+"": ""+NumberOfChanges);
+			else
+				System.out.println(""Case #""+times+"": IMPOSSIBLE"");
+			shoot = 0;
+		}
+		input.close();
+    }
+}"
+599,62,"import java.util.Scanner;
+
+public class Solution {
+
+    public static class Point3D {
+        public double x, y, z;
+
+        public Point3D(double a, double b, double c) {
+            x = a; y = b; z = c;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int T = in.nextInt();
+        Point3D a = new Point3D(0.5, 0, 0), b = new Point3D(0, 0.5, 0), c = new Point3D(0, 0, 0.5);
+        for (int t = 1; t <= T; t++) {
+            double n = in.nextDouble();
+            double theta = (Math.asin(n * n - 1) / 2 + (Math.acos(n / Math.sqrt(2)) + Math.PI / 4)%(Math.PI / 2)) / 2;
+            a = rotate(a, theta);
+            b = rotate(b, theta);
+            c = rotate(c, theta);
+            System.out.println(""Case #"" + t + "":"");
+            print(a);
+            print(b);
+            print(c);
+        }
+    }
+
+    public static void print(Point3D p) {
+        System.out.println(p.x + "" "" + p.y + "" "" + p.z);
+    }
+
+    public static Point3D rotate(Point3D p, double theta) {
+        double cos = Math.cos(theta), sin = Math.sin(theta);
+        double x2 = p.x * cos - p.y * sin;
+        double y2 = p.x * sin + p.y * cos;
+        return new Point3D(x2, y2, p.z);
+    }
+
+}"
+730,75,"
+import java.io.*;
+import java.util.*;
+public class Solution {
+
+    static void troubleSort(int[] arr){
+        boolean done=false;
+        int tmp;
+        while(!done){
+            done =true;
+            for (int i=0;i<arr.length-2 ;i++ ) {
+                if(arr[i]>arr[i+2]){
+                    tmp=arr[i];
+                    arr[i]=arr[i+2];
+                    arr[i+2]=tmp;
+                    done=false;
+                }
+            }
+        }
+
+    }
+
+    public static void main(String args[] ) throws Exception {
+        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+        int tc=Integer.parseInt(br.readLine());
+        int i;
+        for(int cs=1;cs<=tc;cs++){
+
+            int n=Integer.parseInt(br.readLine());
+            int arr[]=new int[n];
+            i=0;
+            for(String s : br.readLine().split("" "")){
+                arr[i++]=Integer.parseInt(s);
+            }
+
+            troubleSort(arr);
+            for(i=0;i<n-1;i++){
+                if(arr[i+1]<arr[i]){
+                    break;
+                }
+            }
+            if(i==n-1){
+                System.out.println(""Case #""+cs+"": OK"");
+            }
+            else{
+                System.out.println(""Case #""+cs+"": ""+i); 
+            }
+        }
+        
+   }
+}
+"
+698,71,"//Author: net12k44
+import java.io.*;
+import java.util.*;
+//public
+class Solution{//}
+
+class Matrix {
+	
+	public int m, n;
+	private double[][] a;
+	
+	public Matrix(int m, int n) {
+		this.m = m;
+		this.n = n;
+		a = new double[m][n];
+	}
+	
+	public Matrix(int m, int n, boolean isIdentity) {
+		this(m, n);
+		if (isIdentity) {
+			if (m == n)
+				for (int i = 0; i < m; ++i)
+					a[i][i] = 1;
+		}
+	}
+	
+	public Matrix(double[][] a) {
+		this(a.length, a[0].length);
+		
+		for (int i = 0; i < m; ++i)
+		for (int j = 0; j < n; ++j)
+			this.a[i][j] = a[i][j];
+	}
+	
+	@Override
+	public String toString() {
+		String result = """";
+		for (int i = 0; i < m; ++i) {
+			for (int j = 0; j < n; ++j) {
+				result = result + a[i][j] + "" "";
+			}
+			
+			result = result + ""\r\n"";
+		}
+		return result;
+	}
+	
+	public Matrix multiply(Matrix other) {
+		Matrix result = new Matrix(m, other.n);
+		for (int i = 0; i < result.m; ++i)
+			for (int j = 0; j < result.n; ++j)
+				for (int k = 0; k < n; ++k) {
+					result.assign(
+						i, j, 
+						result.get(i,j) + this.get(i,k) * other.get(k, j) 
+					);
+				}
+				
+		return result;
+	}
+	
+	public void assign(int i, int j, double value) {
+		a[i][j] = value;
+	}
+	
+	public double get(int i, int j) {
+		return a[i][j];
+	}
+}
+
+
+static double ep = 5e-6;
+static int getSign(double value) {
+	if (Math.abs(value) < ep)
+		return 0;
+	
+	if (value < 0)
+		return -1;
+	
+	return 1;
+}
+
+static class Result implements Comparable<Result> {
+	double area;
+	Matrix rot;
+		
+    
+    @Override
+    public int compareTo(Result other){
+        return Double.compare(area, other.area);
+    }
+	
+}
+
+static class Point implements Comparable<Point>{
+    public double x, y;
+    public Point() { this(0,0); }
+    public Point(double x, double y){
+        this.x = x;
+        this.y = y;
+    }
+    
+    @Override
+    public boolean equals(Object other){
+        if ( !(other instanceof Point) )
+            return false;
+        
+        Point pOther = (Point)other;
+        return Math.abs(x - pOther.x) < ep && Math.abs(y - pOther.y) < ep;
+    }
+    
+    @Override
+    public int compareTo(Point other){
+        if (Math.abs(this.x-other.x) > ep)
+			return Double.compare(x, other.x);										
+        else if (Math.abs(this.y-other.y) > ep)			
+            return Double.compare(y, other.y);
+		return 0;
+    }
+    
+    @Override
+    public String toString(){
+        return (x+"" ""+y);
+    }
+    
+    public final static Point ZERO = new Point();
+    public static double dist(Point a, Point b){
+        double x = a.x-b.x;
+        double y = a.y-b.y;
+        return x*x + y*y;
+    }
+        
+}
+
+static class Vector{
+    public double x, y;
+    
+    public Vector() {this(0,0);}
+    
+    public Vector(double x, double y){
+        this.x = x;
+        this.y = y;
+    }
+    
+    public Vector(Point a, Point b){
+        this(b.x-a.x, b.y-a.y);        
+    }
+    
+    public double length(){
+        return x*x + y*y;
+    }
+    
+    public static double cross_product(Vector a, Vector b){
+        return a.x*b.y - a.y*b.x;
+    }
+}
+
+class Polygon {
+    ArrayList<Point> listPoint;
+    double area = -1;
+    int size = -1;
+    
+    public Polygon(Collection<Point> listPoint){
+        this.listPoint = new ArrayList<Point>();
+        for(Point p: listPoint) {
+			//out.println(p);
+            this.listPoint.add(p);
+		}
+    }
+    
+    public Polygon(Point[] listPoint){
+        this.listPoint = new ArrayList<Point>();
+        for(Point p: listPoint)
+            this.listPoint.add(p);
+    }
+    
+    private boolean isClockwise(Point a, Point b, Point c){
+        Vector x = new Vector(a, b);
+        Vector y = new Vector(a, c);
+		//out.println(a+""   ""+b+""    ""+c+""    ""+Vector.cross_product(x, y));
+        return Vector.cross_product(x,y) < -ep;
+    }
+    
+    public int size(){
+        return size;
+    }
+    
+    public double getArea(){
+        if (area > 0) return area;
+        double result = 0;
+        for(int i = 0; i < listPoint.size(); ++i){
+            Point curr = listPoint.get(i);
+            Point next = listPoint.get( (i+1)%listPoint.size() );
+            result += curr.x*next.y - curr.y*next.x;
+        }
+        
+        area = Math.abs(result)/2;
+        return area;
+    }
+    
+    //Return point inside convex this Polygon        
+    ArrayList<Point> makeConvexPolygon(){
+        if (listPoint.size() == 0)
+            throw new RuntimeException(""Empty Polygon"");
+    
+        for(int i = 1; i < listPoint.size(); ++i)
+            if (listPoint.get(0).compareTo(listPoint.get(i)) > 0)
+                Collections.swap(listPoint,0,i);
+                
+        final Point pFirst = listPoint.get(0);        
+        Collections.sort(listPoint, new Comparator<Point>(){
+            @Override
+            public int compare(Point x, Point y){
+                if (x.equals(y)) return 0;
+                if (x.equals(pFirst)) return -1;
+                if (y.equals(pFirst)) return 1;
+                
+                Vector xx = new Vector(pFirst, x);
+                Vector yy = new Vector(pFirst, y);
+                double result = Vector.cross_product(yy, xx);
+                if (getSign(result) != 0)
+                    return getSign(result);
+                else
+                    return getSign(yy.length() - xx.length());
+            }
+        });
+		
+		//out.println(listPoint);
+                
+        if (listPoint.size() >= 2){
+            int front = 1, rear = 2;
+            Vector vFirst = new Vector(pFirst, listPoint.get(1));
+            for(rear = 2; rear < listPoint.size(); ++rear){
+                Vector xx = new Vector(pFirst, listPoint.get(rear));
+                if (Math.abs(Vector.cross_product(vFirst, xx))>ep) break;
+            }
+            Collections.reverse(listPoint.subList(front, rear));
+        }
+        
+		//out.println(listPoint);
+
+        int nPoint = 0;
+        ArrayList<Point> reject = new ArrayList<Point>();
+        for(Point p: listPoint){
+            //System.err.print(p+"","");
+            while (nPoint >= 2 && 
+                isClockwise(
+                    listPoint.get(nPoint-2),
+                    listPoint.get(nPoint-1),
+                    p
+                )
+            ) reject.add( listPoint.get(--nPoint) );
+            listPoint.set(nPoint++, p);
+            //System.err.println(listPoint);
+        }
+        
+        
+        listPoint.subList(nPoint, listPoint.size()).clear();
+        if (reject.isEmpty()) reject = null;
+        return reject;    
+    }
+
+    @Override
+    public String toString(){
+        return listPoint.toString();
+    }
+    
+    public boolean equals(Polygon other){
+        if (listPoint.size() != other.listPoint.size()) return false;
+        for(int i = 0; i < listPoint.size(); ++i)
+            if (!listPoint.get(i).equals(other.listPoint.get(i)))
+                return false;
+        
+        return true;    
+    }
+  
+}
+
+Result[] res;
+int n;
+
+private void init(long startTime){	
+	int limit = 3241592 + 1000;
+	res = new Result[limit];
+	for (int i = 0; i < limit; ++i) {
+		res[i] = new Result();
+	}
+
+	
+	Matrix[] points = new Matrix[8];
+	for (int i = 0, cnt = 0; i < 2; ++i)
+		for (int j = 0; j < 2; ++j)
+			for (int k = 0; k < 2; ++k) {
+				double[][] p = new double[3][1];
+				p[0][0] = 0.5 * Math.pow(-1, i);
+				p[1][0] = 0.5 * Math.pow(-1, j);
+				p[2][0] = 0.5 * Math.pow(-1, k);
+				//out.println(p[0][0]+"" ""+p[1][0]+"" ""+p[2][0]);
+				points[cnt++] = new Matrix(p);
+			}
+			
+	
+	double smin = 10;
+	double smax = 0;
+	double gap = 0.0000005;
+	
+	
+	int cnt = 0;
+	for (double xAngle = 0, zAngle = gap; xAngle <= Math.PI/4; xAngle += gap) {
+		Matrix rotX = new Matrix(3, 3, true);
+		rotX.assign(1, 1, Math.cos(xAngle)); 
+		rotX.assign(1, 2, -Math.sin(xAngle));
+		rotX.assign(2, 1, Math.sin(xAngle)); 
+		rotX.assign(2, 2, Math.cos(xAngle));			
+		//out.println(rotX);
+		//out.println(rotXY);
+		if (cnt == 1000) {
+			zAngle -= gap*100000;
+		} else {
+			zAngle -= gap;
+		}
+		
+		for (; zAngle <= Math.PI/4; zAngle += gap) {
+			Matrix rotZ = new Matrix(3, 3, true);
+			rotZ.assign(0, 0, Math.cos(zAngle)); 
+			rotZ.assign(0, 1, -Math.sin(zAngle));
+			rotZ.assign(1, 0, Math.sin(zAngle)); 
+			rotZ.assign(1, 1, Math.cos(zAngle));
+			Matrix rot = rotX.multiply(rotZ);
+			
+			//out.println(rotZ);
+			//out.println(rot);
+			List<Point> pp = new ArrayList<Point>();
+			for (int i = 0; i < points.length; ++i) {
+				Matrix p = rot.multiply(points[i]);
+				pp.add(new Point(p.get(0,0), p.get(2,0) ) );										
+			}
+			
+			Polygon poly = new Polygon(pp);
+			//out.println(poly.listPoint);
+			
+			poly.makeConvexPolygon();
+			double s = poly.getArea();								
+			
+			/* if (smin > s) {
+				smin = s;
+				out.println(xAngle+"" ""+yAngle+"" ""+zAngle);
+				out.println(s);
+				out.println(smin+"" ""+smax); out.flush();
+			}
+			
+			if (smax < s) {
+				smax = s;
+				out.println(xAngle+"" ""+yAngle+"" ""+zAngle);
+				out.println(s);
+				out.println(smin+"" ""+smax); out.flush();
+				
+			} */
+							
+			//out.println(s);
+			//if (getSign(s - area) == 0) {
+			//Result now = new Result();
+			res[n].area = s;
+			res[n].rot = rot;			
+			n++;
+				
+				//return;
+			//}				
+		}
+		cnt++;
+		//throw new RuntimeException(""Error"");
+	}
+	
+	//out.println(n);
+	//out.println((String.format(""%.2f"",(double)(System.currentTimeMillis()-startTime)/1000)));
+	Arrays.sort(res, 0, n);
+}
+
+private void lam() {	
+	double area = in.nextDouble();
+	
+	int dau = 0, cuoi = n - 1;
+	while (dau <= cuoi) {
+		int k = (dau + cuoi) >> 1;
+		if (res[k].area < area) {
+			dau = k+1;
+		} else {
+			cuoi = k-1;
+		}
+	}
+	
+	if (dau == n) dau--;
+	if (dau == 0) dau++;
+	int t = dau;
+	if (Math.abs(res[t].area - area) > Math.abs(res[t+1].area - area)) {
+		t--;
+	}
+	
+	
+	Matrix[] results = new Matrix[3];
+	for (int i = 0; i < 3; ++i) {
+		double[][]  p = new double[3][1];
+		p[i][0] = 0.5;
+		results[i] = new Matrix(p);
+	}
+	
+	for (int i = 0; i < 3; ++i) {
+			//out.println(res[t].area);
+			Matrix r = res[t].rot.multiply(results[i]);					
+			for(int k = 0; k < 3; ++k) {
+				out.printf(""%.9f "", r.get(k, 0));								
+		}
+		out.println();
+	}		
+}
+
+
+private void solve(long startTime) {
+	init(startTime);
+    int test = in.nextInt();
+    for(int t = 1; t <= test; ++t){
+        out.printf(""Case #%d:"", t);
+		out.println();
+        lam();
+    }    
+}
+    
+public static void main (String[] args) throws java.lang.Exception {        
+    long startTime = System.currentTimeMillis();
+
+    out = new PrintWriter(System.out);
+    //out = new PrintWriter(""file.out"");
+    new Solution().solve(startTime);    
+    //out.println((String.format(""%.2f"",(double)(System.currentTimeMillis()-startTime)/1000)));
+    out.close();
+}
+static PrintWriter out;
+static void println(int[] a){
+    for(int i = 0; i < a.length; ++i){
+        if (i != 0) out.print(' ');
+        out.print(a[i]);
+    }
+    out.println();
+}
+static class in {
+    static BufferedReader reader = new BufferedReader( new InputStreamReader(System.in) ) ;
+    static StringTokenizer tokenizer = new StringTokenizer("""");                
+    static String next() {        
+        while ( !tokenizer.hasMoreTokens() )
+            try { tokenizer = new StringTokenizer( reader.readLine() ); }
+            catch (IOException e){
+                throw new RuntimeException(e);            
+            }        
+        return tokenizer.nextToken();
+    }
+    static int nextInt() { return Integer.parseInt( next() ); }
+	static double nextDouble() { return Double.parseDouble( next() ); }
+}
+//////////////////////////////////////////////////
+}//"
+461,47,"import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+public class Solution 
+{
+	public static void main(String[] args) throws NumberFormatException, IOException 
+	{
+		int T=0,i=0,N=0,count=0;
+		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		System.out.println(""\n Enter T:"");
+		T=Integer.parseInt(br.readLine());
+		if(T>=1 && T<=100)
+		{
+			for(i=0;i<T;i++)
+			{
+				System.out.println(""Enter N:"");
+				N=Integer.parseInt(br.readLine());
+				int V[]=new int[N];
+				if(N>=3 && N<=100)
+				{
+					System.out.println(""Enter Values:"");
+					for(int j=0;j<N;j++)
+					{
+						V[j]=Integer.parseInt(br.readLine());
+						if(V[j]<0 || V[j]>Math.pow(10,9))
+						{
+							System.exit(0);
+						}
+					}
+						boolean done=false;
+						while(!done)
+						{
+							done=true;
+							for(int j=0;j<V.length-2;j++)
+							{
+								if(V[j]>V[j+2])
+								{
+									done=false;
+									int temp=V[j];
+									V[j]=V[j+2];
+									V[j+2]=temp;
+								}
+							}
+						}				
+						for(int j=0;j<V.length;j++)
+						{
+							for(int k=j+1;k<V.length;k++)
+							{
+								if(V[j]>V[k])
+									count++;
+							}
+						}
+						if(count==0)
+							System.out.println(""Case #""+(i+1)+"":OK"");
+						else
+							System.out.println(""Case #""+(i+1)+"":""+count);
+				}
+			}
+		}
+	}
+}
+"
+859,89,"import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Scanner;
+
+// Solution
+public class Solution {
+	static Scanner in;
+	static PrintWriter out;
+	static String INPUT = """";
+	
+	static void solve()
+	{
+		outer:
+		for(int T = ni(); T > 0;T--){
+			int A = ni();
+			for(int i = 1;i <= 5;i++){
+				for(int j = 1;j <= 5;j++){
+					boolean[][] filled = new boolean[3][3];
+					int nf = 0;
+					while(nf < 9){
+						out.println((3*i) + "" "" + (3*j));
+						out.flush();
+						int x = ni(), y = ni();
+						if(x == 0 && y == 0)continue outer;
+						x -= (3*i-1);
+						y -= (3*j-1);
+						if(!filled[x][y]){
+							filled[x][y] = true;
+							nf++;
+						}
+					}
+				}
+			}
+		}
+		
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		long S = System.currentTimeMillis();
+		in = INPUT.isEmpty() ? new Scanner(System.in) : new Scanner(INPUT);
+		out = new PrintWriter(System.out);
+		
+		solve();
+		out.flush();
+		long G = System.currentTimeMillis();
+		tr(G-S+""ms"");
+	}
+	
+	static int ni() { return Integer.parseInt(in.next()); }
+	static void tr(Object... o) { if(!INPUT.isEmpty())System.out.println(Arrays.deepToString(o)); }
+}
+"
+240,25,"import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner reader = new Scanner(System.in);
+        int t = reader.nextInt();
+        for (int k = 1; k <= t; k++) {
+            int n = reader.nextInt();
+            ArrayList<Integer> v = new ArrayList<Integer>();
+            ArrayList<Integer> v1 = new ArrayList<Integer>();
+            ArrayList<Integer> v2 = new ArrayList<Integer>();
+            for (int i = 0; i < n; i++) {
+                v.add(reader.nextInt());
+            }
+            for (int i = 1; i <= n; i++) {
+                if (i % 2 != 0) {
+                    v1.add(v.get(i - 1));
+                } else {
+                    v2.add(v.get(i - 1));
+                }
+            }
+            Collections.sort(v1);
+            Collections.sort(v2);
+            int pos = 0;
+            int i = 0;
+            boolean found = false;
+            while (!found && i < n / 2) {
+                int a = v1.get(i);
+                int b = 0;
+                if (i <= (n / 2) - 1) {
+                    b = v1.get(i + 1);
+                }
+                int c = v2.get(i);
+                if (a > c || b < c) {
+                    found = true;
+                    pos = i + 1;
+                    System.out.print(""Case #"" + k + "": "");
+                    System.out.print(pos);
+                    System.out.print(""\n"");
+                } else {
+                    i++;
+                }
+            }
+            if (!found) {
+                System.out.print(""Case #"" + k + "": "");
+                System.out.print(""OK"");
+                System.out.print(""\n"");
+            }
+        }
+        reader.close();
+    }
+}
+"
+28,3,"import java.io.*;
+import java.util.*;
+import java.math.BigInteger;
+import java.util.Map.Entry;
+
+import static java.lang.Math.*;
+
+public class Solution extends PrintWriter {
+
+    void run() {
+        int t = nextInt();
+
+        for (int q = 1; q <= t; q++) {
+
+            int a = (nextInt() + 2) / 3;
+
+            while (true) {
+
+                int x = rnd.nextInt(a) + 3;
+                int y = 3;
+
+                print(x);
+                print(' ');
+                print(y);
+                println();
+                flush();
+
+                x = nextInt();
+                y = nextInt();
+                if ((x | y) == 0) {
+                    break;
+                }
+
+                if (x == -1 && y == -1) {
+                    throw new IllegalStateException(""-1"");
+                }
+
+            }
+
+        }
+
+    }
+
+    String next() {
+        while (!tokenizer.hasMoreTokens())
+            tokenizer = new StringTokenizer(nextLine());
+        return tokenizer.nextToken();
+    }
+
+    boolean hasNext() {
+        while (!tokenizer.hasMoreTokens()) {
+            String line = nextLine();
+            if (line == null) {
+                return false;
+            }
+            tokenizer = new StringTokenizer(line);
+        }
+        return true;
+    }
+
+    int[] nextArray(int n) {
+        int[] array = new int[n];
+        for (int i = 0; i < n; i++) {
+            array[i] = nextInt();
+        }
+        return array;
+    }
+
+    int nextInt() {
+        return Integer.parseInt(next());
+    }
+
+    long nextLong() {
+        return Long.parseLong(next());
+    }
+
+    double nextDouble() {
+        return Double.parseDouble(next());
+    }
+
+    String nextLine() {
+        try {
+            return reader.readLine();
+        } catch (IOException err) {
+            return null;
+        }
+    }
+
+    public Solution(OutputStream outputStream) {
+        super(outputStream);
+    }
+
+    static BufferedReader reader;
+    static StringTokenizer tokenizer = new StringTokenizer("""");
+    static Random rnd = new Random();
+
+    public static void main(String[] args) throws IOException {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        Solution solution = new Solution(System.out);
+        solution.run();
+        solution.close();
+        reader.close();
+    }
+}
+"
+53,4,"import java.util.*;
+import java.io.BufferedReader;
+import java.io.*;
+import java.util.StringTokenizer;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.IOException;
+import java.lang.Integer;
+public class Solution{
+      public boolean mat[][];
+      int x=1;
+      int y=1;
+
+      public static void main(String args[]) throws IOException {
+           BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+           StringTokenizer st = new StringTokenizer(br.readLine());
+           int T = Integer.parseInt(st.nextToken());
+           Solution sol;
+           boolean flag=false;
+           int A,i,j;
+           int counter=0;
+           int times=0;
+           while(counter<T){
+                  st = st = new StringTokenizer(br.readLine());
+                  sol = new Solution();
+                  A = Integer.parseInt(st.nextToken());
+                  sol.getData(A);
+                  sol.firstSend();
+                  while(times<1000 && !flag){
+                        st = new StringTokenizer(br.readLine());
+                        i = Integer.parseInt(st.nextToken());
+                        j = Integer.parseInt(st.nextToken());
+                        flag = sol.check(i,j);
+                  }
+                  counter++;
+           }
+      }
+      
+      public void getData(int A){
+           if(A==20)
+                 mat = new boolean[4][5];
+           else if(A==200)
+                 mat = new boolean [4][50];
+      }
+      
+      public void firstSend(){
+            System.out.println( (x+2) + "" "" + (y+2));
+      }
+      
+      public boolean check(int i,int j){
+            if(i!=0 && j!=0){
+                  mat[i-2][j-2] = true;
+                  if(x==1){
+                        if(mat[x][y-1] && mat[x-1][y-1]&&mat[x-1][y]&&mat[x-1][y+1]&&mat[x][y+1])
+                        {
+                            x++;  
+                        }
+                  }else if(x==2){
+                        if(mat[x][y-1] && mat[x+1][y-1]&&mat[x+1][y]&&mat[x+1][y+1]&&mat[x][y+1])
+                        {
+                              x--;
+                              y++;
+                        }
+                  }
+                  System.out.println((x+2) + "" "" +(y+2));
+                  return false;
+            }else if(i==-1 || j==-1){
+                  //System.exit(0);
+            }else if(i==0||j==0)
+                  return true;
+            return false;
+      }
+}"
+623,65,"
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class Solution {
+	public static void main(String[] args) {
+		
+		Scanner scan = new Scanner(System.in);
+		int round = scan.nextInt();
+		for(int i=0;i<round;i++) {
+			int step = cStep(scan.nextLong(),scan.nextLine().trim());
+			if(step==-1) {
+				System.out.println(""Case #""+(i+1)+"": IMPOSSIBLE"");
+			}else {
+				System.out.println(""Case #""+(i+1)+"": ""+step);
+			}
+		}
+		scan.close();
+	}
+	
+	private static int cStep(long defend, String P) {
+		int step = 0;
+		int index = 1;
+		int damage = 0;
+		List<Integer> list = new ArrayList<Integer>();
+		//calculate damage
+		for(int i=0;i<P.length();i++) {
+			if(P.charAt(i) == 'C') {
+				list.add(index);
+				index = index*2;
+			}else {
+				list.add(0);
+				damage += index;
+			}
+		}
+		if(damage<=defend)
+			return step;
+		int start = P.indexOf('C');
+		//impossible
+		if(start>P.length()-1) {
+			return -1;
+		}
+		int end = P.lastIndexOf('C');
+		int count = 0;
+		while(end>=0) {
+			int save = list.get(end)*(P.length()-1-end-count);
+			if(damage-save>=defend) {
+				damage = damage -save;
+				step += P.length()-1-end-count;
+				end = P.lastIndexOf('C', end-1);
+				count++;
+			}else {
+				while(damage>defend) {
+					damage  = damage - list.get(end);
+					step++;
+				}
+				break;
+			}
+				
+		}
+		//impossible
+		if(end<0 && damage>defend) {
+			return -1;
+		}
+		
+		return step;
+	}
+
+}
+"
+882,92,"//package codejam2018.qualification01;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Solution {
+    public static int iT, iD;
+    public static String iP;
+    public static int iM;
+    public static char[] iParr;
+    public static int[] iSarr;
+    
+    public static void main(String[] args) throws Exception{
+        //System.setIn(new FileInputStream(""./src/codejam2018/qualification01/sample_input.txt""));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
+        iT = Integer.parseInt(br.readLine());
+        
+        StringTokenizer st = null;
+        for(int tCase=1; tCase<=iT; tCase++){
+            st = new StringTokenizer(br.readLine(), "" "");
+            
+            iD = Integer.parseInt(st.nextToken());
+            iP = st.nextToken();
+            iParr = iP.toCharArray();
+            iSarr = new int[iParr.length];
+            iM = 0;
+            int bS = 1;
+            for(int i=0; i<iParr.length; i++){
+                if(iParr[i] == 'S'){
+                    iM += bS;
+                } else if(iParr[i] == 'C'){
+                    bS *= 2;
+                }
+                iSarr[i] = bS;
+            }
+            
+            boolean succYn = false;
+            if(iM <= iD){
+                succYn = true;
+            }
+            int k = iParr.length-1;
+            int answer = 0;
+            int sCnt = 0;
+            
+            int j=0;
+            while(k>=0 && !succYn){
+                if(iParr[k] == 'C'){
+                    if(sCnt > 0){
+                        int cP = k;
+                        int tScnt = sCnt;
+                        for(int n=k+1; n<iParr.length; n++){
+                            if(iParr[n] == 'S'){
+                                tScnt--;
+                                iParr[cP] = 'S';
+                                iParr[n] = 'C';
+                                iM = iM - (iSarr[n]/2);
+                                iSarr[cP] = iSarr[cP]/2;
+                                cP = n;
+                                answer++;
+                                
+                                if(iM <= iD){
+                                    succYn = true;
+                                    break;
+                                }
+                                
+                                if(tScnt == 0){
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } else if(iParr[k] == 'S'){
+                    sCnt++;
+                }
+                k--;
+                
+                if(succYn){
+                    break;
+                }
+            }
+            
+            
+            if(succYn){
+                System.out.println(""Case #"" + tCase + "": "" + answer);
+            } else {
+                System.out.println(""Case #"" + tCase + "": IMPOSSIBLE"");
+            }
+        }
+    }
+}
+"
+259,27,"public class Solution {
+    public static void main(String[] args) {
+        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+        int T = in.nextInt();  // Scanner has functions to read ints, longs, strings, chars, etc.
+        in.nextLine();
+        for (int i = 1; i <= T; ++i) {
+            int d = in.nextInt();
+            String string = in.nextLine().trim();
+            solve(i, d, string);
+        }
+    }
+
+    static void solve(int caseN, int D, String input) {
+
+        int dMin = 0;
+        int d = 0;
+        int c = 1;
+        for (int i = 0; i< input.length(); i++) {
+            if (input.charAt(i) == 'S') {
+                dMin++;
+                d = d + c;
+            }
+            else if (input.charAt(i) == 'C') {
+                c = 2 * c;
+            }
+        }
+        int r = D-d;
+        if (r>=0) {
+            System.out.println(""Case #"" + caseN + "": 0"");
+            return;
+        }
+
+        if (dMin>D) {
+            System.out.println(""Case #"" + caseN + "": IMPOSSIBLE"");
+            //                                       IMPOSSIBLE
+            return;
+        }
+        
+        System.out.println(""Case #"" + caseN + "": "" + (-r));
+    }
+}
+"
+728,74,"
+package solution1;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+       
+        BufferedReader inp = new BufferedReader (new InputStreamReader(System.in));
+        int test= Integer.parseInt(inp.readLine());
+        for(int k=1;k<=test;k++){
+           int num= Integer.parseInt(inp.readLine());
+          // System.out.println(num+"" ""+test);
+            int a[]=new int[num];
+//            int b[]=new int[num];
+            boolean check=false;
+            String line = inp.readLine(); // to read multiple integers line
+            String[] strs = line.trim().split(""\\s+"");
+             for(int j=0;j<num;j++){
+                  a[j]=Integer.parseInt(strs[j]);
+             }
+            while(check!=true){
+                check=true;
+                for(int i=0;i<num-2;i++){
+                    int temp;
+                    if(a[i]>a[i+2]){
+                        check=false;
+                        temp=a[i];
+                        a[i]=a[i+2];
+                        a[i+2]=temp;
+                    }
+                 }
+           }
+            if(help(a,k)==true){
+                System.out.print(""Case #""+k+"":OK"");
+            }            
+               
+        }
+    }
+    static boolean help(int a[],int test){
+        for(int i=1;i<a.length-1;i++){
+                if(a[i]>a[i-1] && a[i]>a[i+1]){
+                    System.out.print(""Case #""+test+"":""+i);
+                    return false;
+                   // break;
+                }
+        }
+        return true;
+    }
+    
+}
+"
+775,80,"import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Solution {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br=new BufferedReader(new InputStreamReader (System.in));
+		int test=Integer.parseInt(br.readLine());
+		int[] out=new int[test];
+		for (int i = 0; i < test; i++) {
+			int n=Integer.parseInt(br.readLine());
+			int[] in=new int[n];
+			String[] input=br.readLine().split(""\\s+"");
+			for (int j = 0; j < n; j++) {
+				in[j]=Integer.parseInt(input[j]);
+			}
+			boolean done=false;
+			while (!done) {
+				done=true;
+				for (int j = 0; j < n-2; j++) {
+					if (in[j]>in[j+2]) {
+						done=false;
+						int temp=in[j];
+						in[j]=in[j+2];
+						in[j+2]=temp;
+					}	
+					}
+			}
+			
+			for (int j = 0; j < n-1; j++)
+					if (in[j]>in[j+1]) {
+						out[i]=j;
+						break;
+					}
+		}
+		
+		for (int i = 0; i < test; i++) {
+			if(out[i]==0)
+				System.out.println(""Case #""+(i+1)+"": OK"");
+			else
+				System.out.println(""Case #""+(i+1)+"": ""+out[i]);
+		}
+	
+	
+	}
+}"
+642,67,"import java.util.*;
+import java.io.*;
+
+
+public class Solution {
+	
+	public static void main (String[] args) {
+
+		Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+
+		int t = in.nextInt();	//number of testcases
+		for (int i = 0; i < t; ++i) {
+			System.out.println(""Case #"" + (i+1) + "": "");
+
+			double a = in.nextDouble();	//area to be covered;
+
+			double alpha = Math.PI/4.0 - Math.acos(a/Math.sqrt(2.0));
+
+			double coordinate1 = Math.sin(alpha) / 2.0;
+			double coordinate2 = Math.cos(alpha) / 2.0;
+
+			System.out.println(""-0.5 0 0"");
+			System.out.println(""0 "" + (-a/2.0+coordinate1) + "" "" + (-Math.sqrt(2.0-a*a)/2.0+coordinate2));
+			System.out.println(""0 "" + (-a/2.0+coordinate2) + "" "" + (-Math.sqrt(2.0-a*a)/2.0-coordinate1));
+			System.out.flush();
+
+		}		
+
+	}
+
+}"
