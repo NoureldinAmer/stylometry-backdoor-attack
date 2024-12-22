@@ -1,21 +1,3 @@
-### Features
-
-The `features` package contains a few useful functions:
-
-- `calculate_features_for_files(files)`
-  <br>This function calculates sets of features for the given source files.
-  <br>Usage example: `samples = calculate_features_for_files(['A.java', B.java'])`
-- `build_dataset(samples)`
-  <br>Builds a pandas data frame from the given list of feature sets.
-  <br>Usage example: `df = build_dataset(samples)`
-
-### Training and validation
-
-You can open [De-anonymizing Programmers via Code Stylometry.ipynb](De-anonymizing%20Programmers%20via%20Code%20Stylometry.ipynb) to see how the methods above are used
-to de-anonymize 100 users with 9 code files each.
-
-[CatBoost](http://catboost.ai/) is used to train the model.
-
 # Style-Preserving Backdoor Attacks on Code Completion Models
 
 This repository contains the implementation of our research on style-preserving backdoor attacks on code completion models through vulnerability injection, as detailed in our paper.
@@ -178,16 +160,6 @@ python automated_vulnerability_injection.py
 semgrep --version
 ```
 
-2. Run Semgrep analysis with built-in rules:
-
-```bash
-# Scan for all vulnerabilities
-semgrep scan --config "auto"
-
-# Scan for specific CWEs
-semgrep scan --config "p/cwe-top-25"
-```
-
 ### Snyk Code Setup
 
 1. Authenticate with Snyk:
@@ -196,48 +168,51 @@ semgrep scan --config "p/cwe-top-25"
 snyk auth
 ```
 
-2. Run Snyk Code analysis:
+## File Preparation
+
+First, run the file preparation script from `static_code_analysis.ipynb` to create the Java files from your vulnerability results CSV.
+
+## Running Static Analysis
+
+### Semgrep Analysis
+
+1. Analyze original code base:
 
 ```bash
-# Test current directory
-snyk code test
-
-# Test specific files
-snyk code test path/to/your/file.java
+# Run analysis on original snippets
+semgrep scan --config "p/java" snippets/original/ --output original_results.json --json
 ```
 
-## Reproducing Results
+2. Analyze modified code with injected vulnerabilities:
 
-1. Extract features and prepare datasets:
-
-```python
-# Process both GCJ and GitHub datasets
-python prepare_datasets.py
+```bash
+# Run analysis on modified snippets
+semgrep scan --config "p/java" snippets/modified/ --output modified_results.json --json
 ```
 
-2. Train all models:
+### Snyk Analysis
 
-```python
-python train_models.py
+1. Analyze original code base:
+
+```bash
+# Scan original snippets
+snyk code test snippets/original/ --json > original_snyk.json
 ```
 
-3. Run vulnerability injection:
+2. Analyze modified code:
 
-```python
-python automated_vulnerability_injection.py
+```bash
+# Scan modified snippets
+snyk code test snippets/modified/ --json > modified_snyk.json
 ```
 
-4. Analyze results:
+## Comparing Results
 
-```python
-python analyze_results.py
-```
+The JSON output files can be analyzed to:
 
-The scripts will generate CSV files containing:
-
-- Model performance metrics (accuracy, precision, recall, F1)
-- Style preservation statistics
-- Vulnerability detection rates
+- Compare vulnerability counts between original and modified code
+- Verify detection of injected vulnerabilities
+- Calculate detection rates for each CWE type
 
 ## License
 
